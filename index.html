@@ -127,8 +127,6 @@
 
   <div class="card" style="margin-top: 24px;">
     <p class="label" style="margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #1a1a1a;">查詢我的預約</p>
-    <p class="label">姓名</p>
-    <input type="text" id="lookup-name" placeholder="請輸入姓名">
     <p class="label">聯絡電話</p>
     <input type="tel" id="lookup-phone" placeholder="請輸入手機號碼">
     <button class="opt" id="lookup-btn" style="width:100%; padding:10px; margin-top:4px;">查詢預約</button>
@@ -443,13 +441,12 @@ updateSummary();
 
 // 查詢預約功能
 document.getElementById('lookup-btn').addEventListener('click', function() {
-  var name = document.getElementById('lookup-name').value.trim();
   var phone = document.getElementById('lookup-phone').value.trim();
   var resultBox = document.getElementById('lookup-result');
   var btn = document.getElementById('lookup-btn');
 
-  if (!name || !phone) {
-    resultBox.innerHTML = '<div class="msg error">請輸入姓名與電話</div>';
+  if (!phone) {
+    resultBox.innerHTML = '<div class="msg error">請輸入手機號碼</div>';
     return;
   }
 
@@ -457,7 +454,7 @@ document.getElementById('lookup-btn').addEventListener('click', function() {
   btn.textContent = '查詢中...';
   resultBox.innerHTML = '';
 
-  fetch(API_URL + '?action=lookup&name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone))
+  fetch(API_URL + '?action=lookup&phone=' + encodeURIComponent(phone))
     .then(function(r){ return r.json(); })
     .then(function(data){
       btn.disabled = false;
