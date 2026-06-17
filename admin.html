@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AUROS TESLA 後台管理</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Helvetica Neue", "PingFang TC", Arial, sans-serif;
+    background: #f5f5f5;
+    color: #1a1a1a;
+    padding: 24px 16px;
+  }
+  .container { max-width: 720px; margin: 0 auto; }
+  .header { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 24px; }
+  .header h1 { font-size: 16px; margin: 0; font-weight: 600; }
+  .header p { font-size: 12px; margin: 0; color: #777; }
+
+  .card {
+    background: white; border: 1px solid #e5e5e5; border-radius: 12px;
+    padding: 20px; margin-bottom: 16px;
+  }
+  .label { font-size: 13px; color: #777; margin: 0 0 8px; }
+  input[type="password"], input[type="text"], input[type="tel"] {
+    width: 100%; padding: 10px 12px; font-size: 14px;
+    border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px;
+  }
+  button.opt {
+    padding: 10px 14px; font-size: 14px; border-radius: 8px;
+    border: 1px solid #ddd; background: white; cursor: pointer;
+  }
+  button.opt:hover { border-color: #999; }
+  button.opt.selected { border-color: #1a1a1a; background: #1a1a1a; color: white; }
+  .primary-btn {
+    width: 100%; padding: 12px; font-size: 15px; font-weight: 600;
+    border-radius: 8px; border: none; background: #1a1a1a; color: white;
+    cursor: pointer;
+  }
+  .primary-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+  .tab-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab-row button { flex: 1; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+  .stat-box { background: #f7f7f7; border-radius: 8px; padding: 14px; text-align: center; }
+  .stat-box .num { font-size: 24px; font-weight: 600; }
+  .stat-box .lbl { font-size: 12px; color: #777; margin-top: 4px; }
+
+  .service-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; }
+  .service-bar-row .name { width: 110px; flex-shrink: 0; }
+  .service-bar-track { flex: 1; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+  .service-bar-fill { height: 100%; background: #1a1a1a; }
+  .service-bar-row .pct { width: 36px; text-align: right; color: #777; flex-shrink: 0; }
+
+  .booking-row {
+    border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 8px;
+    font-size: 13px; line-height: 1.6;
+  }
+  .booking-row.cancelled { opacity: 0.5; }
+  .booking-row .top-line { display: flex; justify-content: space-between; align-items: baseline; }
+  .booking-row .id { color: #999; font-size: 11px; }
+  .status-badge {
+    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px;
+  }
+  .status-badge.confirmed { background: #e6f7ed; color: #0a7a3d; }
+  .status-badge.cancelled { background: #f0f0f0; color: #999; }
+  .cancel-row-btn {
+    margin-top: 8px; padding: 6px 12px; font-size: 12px;
+    color: #b91c1c; border-color: #f0c0c0;
+  }
+  .note { font-size: 12px; color: #999; }
+  .msg { text-align: center; font-size: 13px; margin-top: 12px; padding: 10px; border-radius: 8px; }
+  .msg.success { background: #e6f7ed; color: #0a7a3d; }
+  .msg.error { background: #fde8e8; color: #b91c1c; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>AUROS TESLA 後台管理</h1>
+    <p>預約查詢與統計</p>
+  </div>
+
+  <div class="card" id="login-card">
+    <p class="label">請輸入管理密碼</p>
+    <input type="password" id="password-input" placeholder="密碼">
+    <button class="primary-btn" id="login-btn">登入</button>
+    <div id="login-msg"></div>
+  </div>
+
+  <div id="admin-panel" style="display:none;">
+
+    <div class="card">
+      <div class="tab-row">
+        <button class="opt selected" id="tab-today">今日</button>
+        <button class="opt" id="tab-week">本週</button>
+        <button class="opt" id="tab-search">搜尋</button>
+      </div>
+
+      <div id="search-panel" style="display:none; margin-bottom:16px;">
+        <p class="label">客戶手機號碼</p>
+        <input type="tel" id="search-phone" placeholder="請輸入手機號碼">
+        <button class="opt" id="search-btn" style="width:100%;">查詢</button>
+      </div>
+
+      <p class="note" id="loading-note" style="display:none;">載入中...</p>
+    </div>
+
+    <div class="card" id="stats-card" style="display:none;">
+      <p class="label" style="font-size:14px; font-weight:600; color:#1a1a1a;">業績統計</p>
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="num" id="stat-count">0</div>
+          <div class="lbl">預約數（已確認）</div>
+        </div>
+        <div class="stat-box">
+          <div class="num" id="stat-hours">0</div>
+          <div class="lbl">總工時（小時）</div>
+        </div>
+      </div>
+      <p class="label">服務項目佔比</p>
+      <div id="service-breakdown"></div>
+    </div>
+
+    <div class="card">
+      <p class="label" id="list-title" style="font-size:14px; font-weight:600; color:#1a1a1a;">預約列表</p>
+      <div id="booking-list"></div>
+      <p class="note" id="empty-note" style="display:none;">這個範圍內沒有預約記錄</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ⚠️ 請把這裡換成你自己的 Google Apps Script 部署網址（結尾是 /exec），跟前台用同一個網址
+var API_URL = 'https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
+
+// ⚠️ 請把這裡換成你自己想要的後台密碼
+var ADMIN_PASSWORD = 'auros2026';
+
+var SERVICES_LIST = ['電裝升級', '避震/車身升級', '外觀改裝', '基礎保養/檢測'];
+var currentView = 'today';
+
+document.getElementById('login-btn').addEventListener('click', function() {
+  var input = document.getElementById('password-input').value;
+  var msg = document.getElementById('login-msg');
+  if (input === ADMIN_PASSWORD) {
+    document.getElementById('login-card').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    loadView('today');
+  } else {
+    msg.innerHTML = '<div class="msg error">密碼錯誤</div>';
+  }
+});
+
+document.getElementById('password-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('login-btn').click();
+});
+
+function setTab(tab) {
+  ['today','week','search'].forEach(function(t) {
+    document.getElementById('tab-' + t).classList.toggle('selected', t === tab);
+  });
+  document.getElementById('search-panel').style.display = tab === 'search' ? 'block' : 'none';
+  currentView = tab;
+}
+
+document.getElementById('tab-today').addEventListener('click', function() {
+  setTab('today');
+  loadView('today');
+});
+document.getElementById('tab-week').addEventListener('click', function() {
+  setTab('week');
+  loadView('week');
+});
+document.getElementById('tab-search').addEventListener('click', function() {
+  setTab('search');
+  document.getElementById('stats-card').style.display = 'none';
+  document.getElementById('booking-list').innerHTML = '';
+  document.getElementById('empty-note').style.display = 'none';
+  document.getElementById('list-title').textContent = '請輸入手機號碼查詢';
+});
+
+document.getElementById('search-btn').addEventListener('click', function() {
+  var phone = document.getElementById('search-phone').value.trim();
+  if (!phone) return;
+  fetchAndRender(API_URL + '?action=lookup_admin&phone=' + encodeURIComponent(phone), '搜尋結果：' + phone);
+});
+
+function formatDateISO(d) {
+  var y = d.getFullYear(), m = (d.getMonth()+1+'').padStart(2,'0'), day = (d.getDate()+'').padStart(2,'0');
+  return y + '-' + m + '-' + day;
+}
+
+function loadView(view) {
+  var today = new Date();
+  if (view === 'today') {
+    var dateStr = formatDateISO(today);
+    fetchAndRender(API_URL + '?action=bookings&date=' + dateStr, '今日預約（' + dateStr + '）', true);
+  } else if (view === 'week') {
+    var dayOfWeek = today.getDay();
+    var mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    var monday = new Date(today);
+    monday.setDate(today.getDate() + mondayOffset);
+    var sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    var startStr = formatDateISO(monday);
+    var endStr = formatDateISO(sunday);
+    fetchAndRender(API_URL + '?action=bookings&range_start=' + startStr + '&range_end=' + endStr,
+      '本週預約（' + startStr + ' 至 ' + endStr + '）', true);
+  }
+}
+
+function fetchAndRender(url, title, showStats) {
+  var loadingNote = document.getElementById('loading-note');
+  var listEl = document.getElementById('booking-list');
+  var emptyNote = document.getElementById('empty-note');
+  var statsCard = document.getElementById('stats-card');
+
+  document.getElementById('list-title').textContent = title;
+  loadingNote.style.display = 'block';
+  listEl.innerHTML = '';
+  emptyNote.style.display = 'none';
+  statsCard.style.display = 'none';
+
+  fetch(url)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      loadingNote.style.display = 'none';
+      if (!data.success) {
+        listEl.innerHTML = '<div class="msg error">' + (data.error || '查詢失敗') + '</div>';
+        return;
+      }
+
+      var bookings = data.bookings || [];
+
+      if (showStats) {
+        renderStats(bookings);
+      }
+
+      if (bookings.length === 0) {
+        emptyNote.style.display = 'block';
+        return;
+      }
+
+      renderBookingList(bookings);
+    })
+    .catch(function(err){
+      loadingNote.style.display = 'none';
+      listEl.innerHTML = '<div class="msg error">連線失敗，請檢查網路後重試</div>';
+      console.error(err);
+    });
+}
+
+function renderStats(bookings) {
+  var confirmed = bookings.filter(function(b){ return b.status === '已確認'; });
+  document.getElementById('stat-count').textContent = confirmed.length;
+
+  var totalMins = confirmed.reduce(function(sum, b){ return sum + (parseInt(b.total_duration_minutes,10) || 0); }, 0);
+  document.getElementById('stat-hours').textContent = Math.round(totalMins / 60 * 10) / 10;
+
+  var serviceCounts = {};
+  SERVICES_LIST.forEach(function(s){ serviceCounts[s] = 0; });
+  var totalServiceMentions = 0;
+
+  confirmed.forEach(function(b) {
+    var names = String(b.services).split('、');
+    names.forEach(function(n) {
+      n = n.trim();
+      if (n) {
+        if (!serviceCounts.hasOwnProperty(n)) serviceCounts[n] = 0;
+        serviceCounts[n]++;
+        totalServiceMentions++;
+      }
+    });
+  });
+
+  var breakdown = document.getElementById('service-breakdown');
+  breakdown.innerHTML = '';
+
+  if (totalServiceMentions === 0) {
+    breakdown.innerHTML = '<p class="note">尚無資料</p>';
+  } else {
+    Object.keys(serviceCounts).sort(function(a,b){ return serviceCounts[b]-serviceCounts[a]; }).forEach(function(name) {
+      var count = serviceCounts[name];
+      var pct = Math.round(count / totalServiceMentions * 100);
+      var row = document.createElement('div');
+      row.className = 'service-bar-row';
+      row.innerHTML = '<div class="name">' + name + '</div>' +
+        '<div class="service-bar-track"><div class="service-bar-fill" style="width:' + pct + '%;"></div></div>' +
+        '<div class="pct">' + pct + '%</div>';
+      breakdown.appendChild(row);
+    });
+  }
+
+  document.getElementById('stats-card').style.display = 'block';
+}
+
+function formatDisplay(b) {
+  var start = new Date(b.start_time);
+  var end = new Date(b.end_time);
+  var weekdays = ['週日','週一','週二','週三','週四','週五','週六'];
+  var dateLabel = (start.getMonth()+1) + '/' + start.getDate() + ' (' + weekdays[start.getDay()] + ')';
+  var startLabel = (start.getHours()+'').padStart(2,'0') + ':' + (start.getMinutes()+'').padStart(2,'0');
+  var endLabel = (end.getHours()+'').padStart(2,'0') + ':' + (end.getMinutes()+'').padStart(2,'0');
+  return dateLabel + ' ' + startLabel + ' 至 ' + endLabel;
+}
+
+function renderBookingList(bookings) {
+  var listEl = document.getElementById('booking-list');
+  listEl.innerHTML = '';
+
+  bookings.forEach(function(b) {
+    var isCancelled = b.status !== '已確認';
+    var modelLabel = b.vehicle_model + (b.vehicle_gen ? '（' + b.vehicle_gen + '）' : '');
+    var row = document.createElement('div');
+    row.className = 'booking-row' + (isCancelled ? ' cancelled' : '');
+    row.innerHTML =
+      '<div class="top-line"><strong>' + b.customer_name + '</strong>' +
+      '<span class="status-badge ' + (isCancelled ? 'cancelled' : 'confirmed') + '">' + b.status + '</span></div>' +
+      '<div>電話：' + b.customer_phone + '</div>' +
+      '<div>車型：' + modelLabel + '</div>' +
+      '<div>服務：' + b.services + '</div>' +
+      '<div>時間：' + formatDisplay(b) + '</div>' +
+      '<div class="id">編號：' + b.id + '</div>' +
+      (isCancelled ? '' : '<button class="opt cancel-row-btn" data-id="' + b.id + '">取消此預約</button>');
+    listEl.appendChild(row);
+  });
+
+  document.querySelectorAll('.cancel-row-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var id = btn.getAttribute('data-id');
+      if (!window.confirm('確定要取消編號 ' + id + ' 的預約嗎？')) return;
+      btn.disabled = true;
+      btn.textContent = '取消中...';
+
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ action: 'cancel', id: id, admin: true })
+      })
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if (data.success) {
+            loadView(currentView);
+          } else {
+            btn.disabled = false;
+            btn.textContent = '取消此預約';
+            alert(data.error || '取消失敗');
+          }
+        })
+        .catch(function(err){
+          btn.disabled = false;
+          btn.textContent = '取消此預約';
+          alert('連線失敗，請檢查網路後重試');
+          console.error(err);
+        });
+    });
+  });
+}
+</script>
+</body>
+</html>
