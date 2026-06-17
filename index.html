@@ -457,30 +457,18 @@ document.getElementById('lookup-btn').addEventListener('click', function() {
   btn.textContent = '查詢中...';
   resultBox.innerHTML = '';
 
-  fetch(API_URL + '?action=bookings')
+  fetch(API_URL + '?action=lookup&name=' + encodeURIComponent(name) + '&phone=' + encodeURIComponent(phone))
     .then(function(r){ return r.json(); })
     .then(function(data){
       btn.disabled = false;
       btn.textContent = '查詢預約';
 
       if (!data.success) {
-        resultBox.innerHTML = '<div class="msg error">查詢失敗，請稍後再試</div>';
+        resultBox.innerHTML = '<div class="msg error">' + (data.error || '查詢失敗，請稍後再試') + '</div>';
         return;
       }
 
-      var matches = data.bookings.filter(function(b) {
-        return b.customer_name === name &&
-               b.customer_phone === phone &&
-               b.status === 'confirmed';
-      });
-
-      // 只顯示今天以後的預約，並依時間排序
-      var now = new Date();
-      matches = matches.filter(function(b) {
-        return new Date(b.end_time).getTime() >= now.getTime();
-      }).sort(function(a, b) {
-        return new Date(a.start_time) - new Date(b.start_time);
-      });
+      var matches = data.bookings;
 
       if (matches.length === 0) {
         resultBox.innerHTML = '<div class="msg error">查無符合的預約記錄</div>';
