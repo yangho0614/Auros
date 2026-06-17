@@ -560,6 +560,7 @@ document.getElementById('lookup-btn').addEventListener('click', function() {
         var endLabel = formatHourMinLocal(end);
         var modelLabel = b.vehicle_model + (b.vehicle_gen ? '（' + b.vehicle_gen + '）' : '');
         return '<div class="summary-box" style="margin-bottom:8px;">' +
+          '姓名：' + b.customer_name + '　電話：' + b.customer_phone + '<br>' +
           '車型：' + modelLabel + '<br>' +
           '服務：' + b.services + '<br>' +
           '時間：' + dateLabel + ' ' + startLabel + ' 至 ' + endLabel +
@@ -577,13 +578,17 @@ document.getElementById('lookup-btn').addEventListener('click', function() {
           cancelBtn.disabled = true;
           cancelBtn.textContent = '取消中...';
 
+          var cancelPayload = { action: 'cancel', id: bookingId, phone: phone };
+          console.log('送出取消請求：', cancelPayload);
+
           fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({ action: 'cancel', id: bookingId, phone: phone })
+            body: JSON.stringify(cancelPayload)
           })
             .then(function(r){ return r.json(); })
             .then(function(data){
+              console.log('取消請求回應：', data);
               if (data.success) {
                 cancelBtn.closest('.summary-box').innerHTML = '<div class="msg success">此預約已取消</div>';
               } else {
