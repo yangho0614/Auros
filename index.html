@@ -563,10 +563,43 @@ document.getElementById('lookup-btn').addEventListener('click', function() {
           '車型：' + modelLabel + '<br>' +
           '服務：' + b.services + '<br>' +
           '時間：' + dateLabel + ' ' + startLabel + ' 至 ' + endLabel +
+          '<button class="opt cancel-booking-btn" data-id="' + b.id + '" style="width:100%; margin-top:10px; padding:8px; color:#b91c1c; border-color:#f0c0c0;">取消此預約</button>' +
           '</div>';
       }).join('');
 
       resultBox.innerHTML = html;
+
+      document.querySelectorAll('.cancel-booking-btn').forEach(function(cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+          var bookingId = cancelBtn.getAttribute('data-id');
+          if (!window.confirm('確定要取消這筆預約嗎？取消後無法復原。')) return;
+
+          cancelBtn.disabled = true;
+          cancelBtn.textContent = '取消中...';
+
+          fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify({ action: 'cancel', id: bookingId, phone: phone })
+          })
+            .then(function(r){ return r.json(); })
+            .then(function(data){
+              if (data.success) {
+                cancelBtn.closest('.summary-box').innerHTML = '<div class="msg success">此預約已取消</div>';
+              } else {
+                cancelBtn.disabled = false;
+                cancelBtn.textContent = '取消此預約';
+                alert(data.error || '取消失敗，請稍後再試');
+              }
+            })
+            .catch(function(err){
+              cancelBtn.disabled = false;
+              cancelBtn.textContent = '取消此預約';
+              alert('連線失敗，請檢查網路後重試');
+              console.error(err);
+            });
+        });
+      });
     })
     .catch(function(err){
       btn.disabled = false;
