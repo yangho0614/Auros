@@ -14,15 +14,16 @@
     padding: 24px 16px;
   }
   .container { max-width: 480px; margin: 0 auto; }
-  .header { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+  .header { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 24px; }
   .header .logo {
     width: 40px; height: 40px; border-radius: 8px;
     background: #1a1a1a; color: white;
     display: flex; align-items: center; justify-content: center;
     font-size: 18px; font-weight: bold;
+    margin-bottom: 4px;
   }
-  .header h1 { font-size: 16px; margin: 0; font-weight: 600; }
-  .header p { font-size: 12px; margin: 0; color: #777; }
+  .header h1 { font-size: 16px; margin: 0; font-weight: 600; text-align: center; }
+  .header p { font-size: 12px; margin: 0; color: #777; text-align: center; }
 
   .card {
     background: white; border: 1px solid #e5e5e5; border-radius: 12px;
@@ -156,6 +157,10 @@ var API_URL = 'https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQ
 var state = { model: null, gen: null, services: [], selectedDate: null, slot: null, bookedRanges: [], viewYear: null, viewMonth: null };
 var weekdays = ['週日','週一','週二','週三','週四','週五','週六'];
 var needsGen = { 'Model 3': true, 'Model Y': true, 'Model X': false, 'Model S': false };
+var genOptions = {
+  'Model 3': ['煥新版 2024-2026', '2021-2023', '2018-2020'],
+  'Model Y': ['煥新版 2025-2026', '2021+']
+};
 var SERVICES = {}; // 從後端載入
 var CLOSE_HOUR = 18;
 var OPEN_HOUR = 9;
@@ -234,11 +239,15 @@ document.querySelectorAll('#model-group .opt').forEach(function(btn) {
 function renderGenGroup() {
   var genGroup = document.getElementById('gen-group');
   if (state.model && needsGen[state.model]) {
+    var options = genOptions[state.model] || [];
     genGroup.style.display = 'grid';
+    genGroup.style.gridTemplateColumns = 'repeat(' + Math.min(options.length, 3) + ', 1fr)';
     genGroup.innerHTML = '';
-    ['煥新版','舊版'].forEach(function(g) {
+    options.forEach(function(g) {
       var btn = document.createElement('button');
       btn.className = 'opt';
+      btn.style.fontSize = '13px';
+      btn.style.padding = '10px 4px';
       btn.textContent = g;
       btn.addEventListener('click', function() {
         document.querySelectorAll('#gen-group .opt').forEach(function(b){ b.classList.remove('selected'); });
