@@ -100,12 +100,6 @@
     <p class="label">服務項目（可複選）</p>
     <div id="service-group" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
 
-    <p class="label">姓名</p>
-    <input type="text" id="customer-name" placeholder="請輸入姓名">
-
-    <p class="label">聯絡電話</p>
-    <input type="tel" id="customer-phone" placeholder="請輸入手機號碼">
-
     <p class="label">選擇日期</p>
     <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
       <button class="opt" id="prev-day" style="width:40px;">←</button>
@@ -118,12 +112,28 @@
     <p class="note" id="closed-note" style="display:none;">此日為公休日（週六、週日不營業）</p>
     <p class="note" id="select-service-note" style="display:none;">請先選擇服務項目以計算所需時段</p>
     <p class="note" id="loading-note" style="display:none;">載入時段中...</p>
+
+    <p class="label">姓名</p>
+    <input type="text" id="customer-name" placeholder="請輸入姓名">
+
+    <p class="label">聯絡電話</p>
+    <input type="tel" id="customer-phone" placeholder="請輸入手機號碼">
   </div>
 
   <div class="summary-box" id="summary">請選擇車型、服務項目與時段</div>
 
   <button class="submit-btn" id="confirm-btn" disabled>確認預約</button>
   <div id="result-msg"></div>
+
+  <div class="card" style="margin-top: 24px;">
+    <p class="label" style="margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #1a1a1a;">查詢我的預約</p>
+    <p class="label">姓名</p>
+    <input type="text" id="lookup-name" placeholder="請輸入姓名">
+    <p class="label">聯絡電話</p>
+    <input type="tel" id="lookup-phone" placeholder="請輸入手機號碼">
+    <button class="opt" id="lookup-btn" style="width:100%; padding:10px; margin-top:4px;">查詢預約</button>
+    <div id="lookup-result" style="margin-top:12px;"></div>
+  </div>
 </div>
 
 <script>
@@ -430,6 +440,81 @@ document.getElementById('confirm-btn').addEventListener('click', function() {
 
 renderDate();
 updateSummary();
+
+// 查詢預約功能
+document.getElementById('lookup-btn').addEventListener('click', function() {
+  var name = document.getElementById('lookup-name').value.trim();
+  var phone = document.getElementById('lookup-phone').value.trim();
+  var resultBox = document.getElementById('lookup-result');
+  var btn = document.getElementById('lookup-btn');
+
+  if (!name || !phone) {
+    resultBox.innerHTML = '<div class="msg error">請輸入姓名與電話</div>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '查詢中...';
+  resultBox.innerHTML = '';
+
+  fetch(API_URL + '?action=bookings')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      btn.disabled = false;
+      btn.textContent = '查詢預約';
+
+      if (!data.success) {
+        resultBox.innerHTML = '<div class="msg error">查詢失敗，請稍後再試</div>';
+        return;
+      }
+
+      var matches = data.bookings.filter(function(b) {
+        return b.customer_name === name &&
+               b.customer_phone === phone &&
+               b.status === 'confirmed';
+      });
+
+      // 只顯示今天以後的預約，並依時間排序
+      var now = new Date();
+      matches = matches.filter(function(b) {
+        return new Date(b.end_time).getTime() >= now.getTime();
+      }).sort(function(a, b) {
+        return new Date(a.start_time) - new Date(b.start_time);
+      });
+
+      if (matches.length === 0) {
+        resultBox.innerHTML = '<div class="msg error">查無符合的預約記錄</div>';
+        return;
+      }
+
+      var html = matches.map(function(b) {
+        var start = new Date(b.start_time);
+        var end = new Date(b.end_time);
+        var dateLabel = formatDateLabel(start);
+        var startLabel = formatHourMinLocal(start);
+        var endLabel = formatHourMinLocal(end);
+        var modelLabel = b.vehicle_model + (b.vehicle_gen ? '（' + b.vehicle_gen + '）' : '');
+        return '<div class="summary-box" style="margin-bottom:8px;">' +
+          '車型：' + modelLabel + '<br>' +
+          '服務：' + b.services + '<br>' +
+          '時間：' + dateLabel + ' ' + startLabel + ' 至 ' + endLabel +
+          '</div>';
+      }).join('');
+
+      resultBox.innerHTML = html;
+    })
+    .catch(function(err){
+      btn.disabled = false;
+      btn.textContent = '查詢預約';
+      resultBox.innerHTML = '<div class="msg error">連線失敗，請檢查網路後重試</div>';
+      console.error(err);
+    });
+});
+
+function formatHourMinLocal(date) {
+  var h = date.getHours(), m = date.getMinutes();
+  return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
+}
 </script>
 </body>
 </html>
