@@ -154,7 +154,7 @@
 // ⚠️ 請把這裡換成你自己的 Google Apps Script 部署網址（結尾是 /exec）
 var API_URL = 'https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
 
-var state = { model: null, gen: null, services: [], selectedDate: null, slot: null, bookedRanges: [], viewYear: null, viewMonth: null };
+var state = { model: null, gen: null, services: [], subServices: {}, selectedDate: null, slot: null, bookedRanges: [], viewYear: null, viewMonth: null };
 var weekdays = ['週日','週一','週二','週三','週四','週五','週六'];
 var needsGen = { 'Model 3': true, 'Model Y': true, 'Model X': false, 'Model S': false };
 var genOptions = {
@@ -162,6 +162,7 @@ var genOptions = {
   'Model Y': ['煥新版 2025-2026', '2021+']
 };
 var SERVICES = {}; // 從後端載入
+var SUB_SERVICES = {}; // 從後端載入
 var CLOSE_HOUR = 18;
 var OPEN_HOUR = 9;
 
@@ -198,6 +199,7 @@ fetch(API_URL + '?action=services')
   .then(function(data){
     if (data.success) {
       SERVICES = data.services;
+      SUB_SERVICES = data.sub_services || {};
       renderServiceGroup();
     }
   })
@@ -208,6 +210,10 @@ function renderServiceGroup() {
   group.innerHTML = '';
   Object.keys(SERVICES).forEach(function(name) {
     var mins = SERVICES[name];
+    var hasSub = SUB_SERVICES.hasOwnProperty(name);
+
+    var wrapper = document.createElement('div');
+
     var btn = document.createElement('button');
     btn.className = 'opt service-row';
     btn.innerHTML = '<span>' + name + '</span><span class="dur">約 ' + formatMins(mins) + '</span>';
@@ -218,11 +224,50 @@ function renderServiceGroup() {
         if (idx === -1) state.services.push(name);
       } else {
         if (idx !== -1) state.services.splice(idx, 1);
+        delete state.subServices[name];
       }
+      subSelect.style.display = (hasSub && btn.classList.contains('selected')) ? 'block' : 'none';
       state.slot = null;
       loadAvailabilityAndRenderSlots();
+      updateSummary();
     });
-    group.appendChild(btn);
+    wrapper.appendChild(btn);
+
+    var subSelect = document.createElement('select');
+    subSelect.style.display = 'none';
+    subSelect.style.width = '100%';
+    subSelect.style.padding = '10px 12px';
+    subSelect.style.fontSize = '14px';
+    subSelect.style.border = '1px solid #ddd';
+    subSelect.style.borderRadius = '8px';
+    subSelect.style.marginTop = '6px';
+    subSelect.style.marginBottom = '4px';
+
+    if (hasSub) {
+      var placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = '請選擇細項';
+      subSelect.appendChild(placeholder);
+
+      SUB_SERVICES[name].forEach(function(sub) {
+        var opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        subSelect.appendChild(opt);
+      });
+
+      subSelect.addEventListener('change', function() {
+        if (subSelect.value) {
+          state.subServices[name] = subSelect.value;
+        } else {
+          delete state.subServices[name];
+        }
+        updateSummary();
+      });
+    }
+    wrapper.appendChild(subSelect);
+
+    group.appendChild(wrapper);
   });
 }
 
@@ -441,6 +486,19 @@ function renderSlots() {
   });
 }
 
+function getMissingSubServices() {
+  return state.services.filter(function(name) {
+    return SUB_SERVICES.hasOwnProperty(name) && !state.subServices[name];
+  });
+}
+
+function getServiceDisplayLabels() {
+  return state.services.map(function(name) {
+    var sub = state.subServices[name];
+    return sub ? name + '-' + sub : name;
+  });
+}
+
 function updateSummary() {
   var summary = document.getElementById('summary');
   var d = state.selectedDate;
@@ -449,14 +507,16 @@ function updateSummary() {
   var slotCount = getSlotCount(totalMins);
   var name = document.getElementById('customer-name').value.trim();
   var phone = document.getElementById('customer-phone').value.trim();
+  var missingSubs = getMissingSubServices();
+  var servicesReady = state.services.length > 0 && missingSubs.length === 0;
 
-  if (modelReady && state.services.length > 0 && d && state.slot && name && phone) {
+  if (modelReady && servicesReady && d && state.slot && name && phone) {
     var modelLabel = state.model + (state.gen ? '（' + state.gen + '）' : '');
     var startH = parseInt(state.slot.split(':')[0], 10);
     var endH = startH + slotCount;
     summary.innerHTML = '姓名：' + name + '　電話：' + phone +
       '<br>車型：' + modelLabel +
-      '<br>服務：' + state.services.join('、') + '（共約 ' + formatMins(totalMins) + '）' +
+      '<br>服務：' + getServiceDisplayLabels().join('、') + '（共約 ' + formatMins(totalMins) + '）' +
       '<br>時間：' + formatDateLabel(d) + ' ' + state.slot + ' 至 ' + endH + ':00';
     document.getElementById('confirm-btn').disabled = false;
   } else {
@@ -466,6 +526,7 @@ function updateSummary() {
     if (!state.model) parts.push('車型');
     else if (needsGen[state.model] && !state.gen) parts.push('版本');
     if (state.services.length === 0) parts.push('服務項目');
+    else if (missingSubs.length > 0) parts.push(missingSubs.join('、') + ' 的細項');
     if (!d) parts.push('日期');
     else if (!state.slot) parts.push('時段');
     summary.textContent = '請填寫：' + parts.join('、');
@@ -493,6 +554,7 @@ document.getElementById('confirm-btn').addEventListener('click', function() {
     vehicle_model: state.model,
     vehicle_gen: state.gen,
     service_names: state.services,
+    sub_services: state.subServices,
     start_time: startTime.toISOString()
   };
 
