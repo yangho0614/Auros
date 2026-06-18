@@ -155,6 +155,18 @@
 var API_URL = 'https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
 
 var state = { model: null, gen: null, services: [], subServices: {}, selectedDate: null, slot: null, bookedRanges: [], viewYear: null, viewMonth: null };
+function getTotalMins() {
+  var total = 0;
+  state.services.forEach(function(name) {
+    if (SUB_SERVICES.hasOwnProperty(name)) {
+      var chosen = state.subServices[name] || [];
+      chosen.forEach(function(sub) { total += SUB_SERVICES[name][sub]; });
+    } else {
+      total += SERVICES[name];
+    }
+  });
+  return total;
+}
 var weekdays = ['週日','週一','週二','週三','週四','週五','週六'];
 var needsGen = { 'Model 3': true, 'Model Y': true, 'Model X': false, 'Model S': false };
 var genOptions = {
@@ -186,11 +198,6 @@ function formatMins(mins) {
   if (h > 0) return h + '小時';
   return m + '分';
 }
-function getTotalMins() {
-  var total = 0;
-  state.services.forEach(function(s){ total += SERVICES[s]; });
-  return total;
-}
 function getSlotCount(totalMins) { return Math.max(1, Math.ceil(totalMins/60)); }
 
 // 載入服務項目
@@ -209,63 +216,60 @@ function renderServiceGroup() {
   var group = document.getElementById('service-group');
   group.innerHTML = '';
   Object.keys(SERVICES).forEach(function(name) {
-    var mins = SERVICES[name];
     var hasSub = SUB_SERVICES.hasOwnProperty(name);
+    var mins = hasSub ? null : SERVICES[name];
 
     var wrapper = document.createElement('div');
 
     var btn = document.createElement('button');
     btn.className = 'opt service-row';
-    btn.innerHTML = '<span>' + name + '</span><span class="dur">約 ' + formatMins(mins) + '</span>';
+    btn.innerHTML = '<span>' + name + '</span>' +
+      (mins !== null ? '<span class="dur">約 ' + formatMins(mins) + '</span>' : '<span class="dur">依選擇細項計算</span>');
     btn.addEventListener('click', function() {
       btn.classList.toggle('selected');
       var idx = state.services.indexOf(name);
       if (btn.classList.contains('selected')) {
         if (idx === -1) state.services.push(name);
+        if (hasSub) state.subServices[name] = [];
       } else {
         if (idx !== -1) state.services.splice(idx, 1);
         delete state.subServices[name];
       }
-      subSelect.style.display = (hasSub && btn.classList.contains('selected')) ? 'block' : 'none';
+      subGroup.style.display = (hasSub && btn.classList.contains('selected')) ? 'flex' : 'none';
       state.slot = null;
       loadAvailabilityAndRenderSlots();
       updateSummary();
     });
     wrapper.appendChild(btn);
 
-    var subSelect = document.createElement('select');
-    subSelect.style.display = 'none';
-    subSelect.style.width = '100%';
-    subSelect.style.padding = '10px 12px';
-    subSelect.style.fontSize = '14px';
-    subSelect.style.border = '1px solid #ddd';
-    subSelect.style.borderRadius = '8px';
-    subSelect.style.marginTop = '6px';
-    subSelect.style.marginBottom = '4px';
+    var subGroup = document.createElement('div');
+    subGroup.className = 'sub-service-group';
+    subGroup.style.display = 'none';
 
     if (hasSub) {
-      var placeholder = document.createElement('option');
-      placeholder.value = '';
-      placeholder.textContent = '請選擇細項';
-      subSelect.appendChild(placeholder);
-
-      SUB_SERVICES[name].forEach(function(sub) {
-        var opt = document.createElement('option');
-        opt.value = sub;
-        opt.textContent = sub;
-        subSelect.appendChild(opt);
-      });
-
-      subSelect.addEventListener('change', function() {
-        if (subSelect.value) {
-          state.subServices[name] = subSelect.value;
-        } else {
-          delete state.subServices[name];
-        }
-        updateSummary();
+      Object.keys(SUB_SERVICES[name]).forEach(function(sub) {
+        var subMins = SUB_SERVICES[name][sub];
+        var chip = document.createElement('div');
+        chip.className = 'sub-service-chip';
+        chip.innerHTML = '<span class="check-box"></span><span>' + sub + '</span><span class="sub-dur">約 ' + formatMins(subMins) + '</span>';
+        chip.addEventListener('click', function() {
+          chip.classList.toggle('selected');
+          if (!state.subServices[name]) state.subServices[name] = [];
+          var list = state.subServices[name];
+          var subIdx = list.indexOf(sub);
+          if (chip.classList.contains('selected')) {
+            if (subIdx === -1) list.push(sub);
+          } else {
+            if (subIdx !== -1) list.splice(subIdx, 1);
+          }
+          state.slot = null;
+          loadAvailabilityAndRenderSlots();
+          updateSummary();
+        });
+        subGroup.appendChild(chip);
       });
     }
-    wrapper.appendChild(subSelect);
+    wrapper.appendChild(subGroup);
 
     group.appendChild(wrapper);
   });
@@ -488,15 +492,21 @@ function renderSlots() {
 
 function getMissingSubServices() {
   return state.services.filter(function(name) {
-    return SUB_SERVICES.hasOwnProperty(name) && !state.subServices[name];
+    return SUB_SERVICES.hasOwnProperty(name) && (!state.subServices[name] || state.subServices[name].length === 0);
   });
 }
 
 function getServiceDisplayLabels() {
-  return state.services.map(function(name) {
-    var sub = state.subServices[name];
-    return sub ? name + '-' + sub : name;
+  var labels = [];
+  state.services.forEach(function(name) {
+    if (SUB_SERVICES.hasOwnProperty(name)) {
+      var chosen = state.subServices[name] || [];
+      chosen.forEach(function(sub) { labels.push(name + '-' + sub); });
+    } else {
+      labels.push(name);
+    }
   });
+  return labels;
 }
 
 function updateSummary() {
