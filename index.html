@@ -112,7 +112,7 @@
     <div class="grid-2" id="gen-group" style="display:none;"></div>
 
     <p class="label">服務項目（可複選）</p>
-    <div id="service-group" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
+    <div id="service-group"></div>
 
     <p class="label">選擇日期</p>
     <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;">
@@ -179,7 +179,7 @@ var CLOSE_HOUR = 18;
 var OPEN_HOUR = 9;
 
 function getDate(offset) {
-  var d = new Date();
+  var d = getTaiwanNow();
   d.setDate(d.getDate() + offset);
   return d;
 }
@@ -191,6 +191,33 @@ function formatDateISO(d) {
 }
 function isSameDate(a, b) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+
+/**
+ * 取得當下的台灣時間（GMT+8），不受使用者裝置本身的時區設定影響。
+ * 做法：取得當下的 UTC 時間戳記，加上 8 小時的毫秒數，
+ * 並產生一個「本地時間欄位數值等同台灣時間」的 Date 物件，
+ * 這樣後續呼叫 getHours()、getDate() 等方法時，讀到的就是台灣時間的數值。
+ */
+function getTaiwanNow() {
+  var nowUTC = Date.now();
+  var taiwanOffsetMs = 8 * 60 * 60 * 1000;
+  return new Date(nowUTC + taiwanOffsetMs + new Date().getTimezoneOffset() * 60000);
+}
+
+/**
+ * 把「代表台灣時間數值」的 Date 物件，正確轉換成送給後端的 ISO 字串（含台灣時區標示 +08:00）。
+ * 因為 getTaiwanNow() 產生的物件內部數值已經被刻意位移過，
+ * 不能直接呼叫 toISOString()（那會再次套用 UTC 轉換造成錯誤），必須手動組合字串。
+ */
+function toTaiwanISOString(d) {
+  var y = d.getFullYear();
+  var m = (d.getMonth()+1+'').padStart(2,'0');
+  var day = (d.getDate()+'').padStart(2,'0');
+  var h = (d.getHours()+'').padStart(2,'0');
+  var min = (d.getMinutes()+'').padStart(2,'0');
+  var s = (d.getSeconds()+'').padStart(2,'0');
+  return y + '-' + m + '-' + day + 'T' + h + ':' + min + ':' + s + '+08:00';
 }
 function formatMins(mins) {
   var h = Math.floor(mins/60), m = mins%60;
@@ -224,7 +251,7 @@ function renderServiceGroup() {
     var btn = document.createElement('button');
     btn.className = 'opt service-row';
 
-    var labelHtml = '<span>' + name + '</span>';
+    var labelHtml = '<span class="check-box"></span><span>' + name + '</span>';
     if (mins !== null) {
       labelHtml += '<span class="dur-fixed">約 ' + formatMins(mins) + '</span>';
     } else {
@@ -362,7 +389,7 @@ function renderCalendar() {
   var firstDay = new Date(state.viewYear, state.viewMonth, 1);
   var startWeekday = firstDay.getDay();
   var daysInMonth = new Date(state.viewYear, state.viewMonth + 1, 0).getDate();
-  var today = new Date();
+  var today = getTaiwanNow();
   today.setHours(0,0,0,0);
 
   for (var i = 0; i < startWeekday; i++) {
@@ -585,8 +612,7 @@ document.getElementById('confirm-btn').addEventListener('click', function() {
 
   var d = state.selectedDate;
   var startH = parseInt(state.slot.split(':')[0], 10);
-  var startTime = new Date(d);
-  startTime.setHours(startH, 0, 0, 0);
+  var startTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), startH, 0, 0);
 
   var payload = {
     customer_name: document.getElementById('customer-name').value.trim(),
@@ -595,7 +621,7 @@ document.getElementById('confirm-btn').addEventListener('click', function() {
     vehicle_gen: state.gen,
     service_names: state.services,
     sub_services: state.subServices,
-    start_time: startTime.toISOString()
+    start_time: toTaiwanISOString(startTime)
   };
 
   fetch(API_URL, {
