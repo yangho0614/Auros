@@ -232,7 +232,6 @@ fetch(API_URL + '?action=services')
   .then(function(r){ return r.json(); })
   .then(function(data){
     if (data.success) {
-      SERVICES = data.services;
       SUB_SERVICES = data.sub_services || {};
       renderServiceGroup();
     }
@@ -242,92 +241,70 @@ fetch(API_URL + '?action=services')
 function renderServiceGroup() {
   var group = document.getElementById('service-group');
   group.innerHTML = '';
-  Object.keys(SERVICES).forEach(function(name) {
-    var hasSub = SUB_SERVICES.hasOwnProperty(name);
-    var mins = hasSub ? null : SERVICES[name];
-
+  Object.keys(SUB_SERVICES).forEach(function(name) {
     var wrapper = document.createElement('div');
 
-    var btn = document.createElement('button');
-    btn.className = 'opt service-row';
-
-    var labelHtml = '<span class="check-box"></span><span>' + name + '</span>';
-    if (mins !== null) {
-      labelHtml += '<span class="dur-fixed">約 ' + formatMins(mins) + '</span>';
-    } else {
-      labelHtml += '<span class="expand-arrow">▾</span>';
-    }
-    btn.innerHTML = labelHtml;
-
-    btn.addEventListener('click', function() {
-      btn.classList.toggle('selected');
-      var isSelected = btn.classList.contains('selected');
-      var idx = state.services.indexOf(name);
-
-      if (isSelected) {
-        if (idx === -1) state.services.push(name);
-        if (hasSub) {
-          if (!state.subServices[name]) state.subServices[name] = [];
-          // 勾選大項時自動展開細項清單，方便接著選擇
-          openSubGroup(true);
-        }
-      } else {
-        if (idx !== -1) state.services.splice(idx, 1);
-        delete state.subServices[name];
-        if (hasSub) openSubGroup(false);
-      }
-
-      state.slot = null;
-      loadAvailabilityAndRenderSlots();
-      updateSummary();
-    });
-    wrapper.appendChild(btn);
+    // 所有大項統一呈現方式：純標題列，本身不可勾選，只負責展開/收合細項清單
+    var titleRow = document.createElement('div');
+    titleRow.className = 'service-title-row';
+    titleRow.innerHTML =
+      '<span class="title-text">' + name + '</span>' +
+      '<span class="selected-count" style="display:none;"></span>' +
+      '<span class="expand-arrow">▾</span>';
+    wrapper.appendChild(titleRow);
 
     var subGroup = document.createElement('div');
     subGroup.className = 'sub-service-group';
-    var arrowEl = btn.querySelector('.expand-arrow');
+    var arrowEl = titleRow.querySelector('.expand-arrow');
+    var countEl = titleRow.querySelector('.selected-count');
 
-    function openSubGroup(open) {
-      subGroup.classList.toggle('open', open);
-      if (arrowEl) arrowEl.classList.toggle('open', open);
+    titleRow.addEventListener('click', function() {
+      subGroup.classList.toggle('open');
+      arrowEl.classList.toggle('open');
+    });
+
+    function updateCountBadge() {
+      var chosen = state.subServices[name] || [];
+      if (chosen.length > 0) {
+        countEl.style.display = 'inline-block';
+        countEl.textContent = '已選 ' + chosen.length + ' 項';
+      } else {
+        countEl.style.display = 'none';
+      }
     }
 
-    if (hasSub) {
-      // 點箭頭可獨立展開/收合細項清單，不影響是否勾選大項本身
-      arrowEl.addEventListener('click', function(e) {
-        e.stopPropagation();
-        openSubGroup(!subGroup.classList.contains('open'));
+    Object.keys(SUB_SERVICES[name]).forEach(function(sub) {
+      var subMins = SUB_SERVICES[name][sub];
+      var chip = document.createElement('div');
+      chip.className = 'sub-service-chip';
+      chip.innerHTML = '<span class="check-box"></span><span>' + sub + '</span><span class="sub-dur">約 ' + formatMins(subMins) + '</span>';
+      chip.addEventListener('click', function() {
+        chip.classList.toggle('selected');
+        if (!state.subServices[name]) state.subServices[name] = [];
+        var list = state.subServices[name];
+        var subIdx = list.indexOf(sub);
+        if (chip.classList.contains('selected')) {
+          if (subIdx === -1) list.push(sub);
+        } else {
+          if (subIdx !== -1) list.splice(subIdx, 1);
+        }
+        // 大項目本身不是按鈕，是否視為「已選取此服務」完全由細項是否有勾選決定
+        var hasAnySelected = list.length > 0;
+        var idx = state.services.indexOf(name);
+        if (hasAnySelected && idx === -1) {
+          state.services.push(name);
+        } else if (!hasAnySelected && idx !== -1) {
+          state.services.splice(idx, 1);
+        }
+        updateCountBadge();
+        state.slot = null;
+        loadAvailabilityAndRenderSlots();
+        updateSummary();
       });
+      subGroup.appendChild(chip);
+    });
 
-      Object.keys(SUB_SERVICES[name]).forEach(function(sub) {
-        var subMins = SUB_SERVICES[name][sub];
-        var chip = document.createElement('div');
-        chip.className = 'sub-service-chip';
-        chip.innerHTML = '<span class="check-box"></span><span>' + sub + '</span><span class="sub-dur">約 ' + formatMins(subMins) + '</span>';
-        chip.addEventListener('click', function() {
-          chip.classList.toggle('selected');
-          if (!state.subServices[name]) state.subServices[name] = [];
-          var list = state.subServices[name];
-          var subIdx = list.indexOf(sub);
-          if (chip.classList.contains('selected')) {
-            if (subIdx === -1) list.push(sub);
-            // 勾選細項時自動把大項一併標記為已選
-            if (!btn.classList.contains('selected')) {
-              btn.classList.add('selected');
-              if (state.services.indexOf(name) === -1) state.services.push(name);
-            }
-          } else {
-            if (subIdx !== -1) list.splice(subIdx, 1);
-          }
-          state.slot = null;
-          loadAvailabilityAndRenderSlots();
-          updateSummary();
-        });
-        subGroup.appendChild(chip);
-      });
-    }
     wrapper.appendChild(subGroup);
-
     group.appendChild(wrapper);
   });
 }
