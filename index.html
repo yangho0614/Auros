@@ -303,6 +303,7 @@ function renderServiceGroup() {
         countEl.style.display = 'none';
       }
     }
+    updateCountBadge();
 
     Object.keys(SUB_SERVICES[name]).forEach(function(sub) {
       var subMins = SUB_SERVICES[name][sub];
