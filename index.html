@@ -14,6 +14,7 @@
     padding: 24px 16px;
   }
   .container { max-width: 480px; margin: 0 auto; }
+
   .header { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 24px; }
   .header .logo {
     width: 40px; height: 40px; border-radius: 8px;
@@ -38,23 +39,62 @@
   button.opt {
     padding: 10px 8px; font-size: 14px; border-radius: 8px;
     border: 1px solid #ddd; background: white; cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.15s; font-family: inherit;
   }
   button.opt:hover { border-color: #999; }
   button.opt.selected { border-color: #1a1a1a; background: #1a1a1a; color: white; }
   button.opt.disabled { opacity: 0.35; cursor: not-allowed; }
   button.opt.disabled:hover { border-color: #ddd; }
 
-  .service-row {
-    display: flex; align-items: center; justify-content: flex-start;
-    gap: 8px; text-align: left; padding: 12px;
+  /* ===== 服務項目區塊 ===== */
+  #service-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  #service-group > div { width: 100%; }
+
+  .service-title-row {
+    display: flex; align-items: center; gap: 8px; width: 100%;
+    padding: 12px; border: 1px solid #ddd; border-radius: 8px; background: white;
+    cursor: pointer; font-size: 14px;
   }
-  .service-row .dur { margin-left: auto; font-size: 12px; color: #999; }
-  .service-row.selected .dur { color: #ccc; }
+  .service-title-row:hover { border-color: #999; }
+  .service-title-row .title-text { flex: 1; text-align: left; }
+  .service-title-row .selected-count {
+    font-size: 12px; color: #1a1a1a; background: #f0f0f0; padding: 2px 8px; border-radius: 10px;
+    white-space: nowrap;
+  }
+  .service-title-row .expand-arrow {
+    font-size: 11px; color: #999; transition: transform 0.15s; flex-shrink: 0;
+    display: inline-block;
+  }
+  .service-title-row .expand-arrow.open { transform: rotate(180deg); }
+
+  .sub-service-group {
+    display: flex; flex-direction: column; gap: 6px;
+    max-height: 0; overflow: hidden; transition: max-height 0.25s ease;
+    padding-left: 4px;
+  }
+  .sub-service-group.open { max-height: 500px; margin-top: 6px; }
+
+  .sub-service-chip {
+    display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+    border: 1px solid #ddd; border-radius: 8px; font-size: 13px; cursor: pointer;
+    background: white; width: 100%;
+  }
+  .sub-service-chip:hover { border-color: #999; }
+  .sub-service-chip.selected { border-color: #1a1a1a; background: #f5f5f5; }
+  .sub-service-chip .check-box {
+    width: 16px; height: 16px; border-radius: 4px; border: 1px solid #ccc;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    background: white;
+  }
+  .sub-service-chip.selected .check-box { background: #1a1a1a; border-color: #1a1a1a; }
+  .sub-service-chip.selected .check-box::after { content: '✓'; color: white; font-size: 11px; line-height: 1; }
+  .sub-service-chip .sub-dur { margin-left: auto; font-size: 11px; color: #999; flex-shrink: 0; }
+  /* ===== 服務項目區塊結束 ===== */
 
   input[type="text"], input[type="tel"] {
     width: 100%; padding: 10px 12px; font-size: 14px;
     border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px;
+    font-family: inherit;
   }
 
   .summary-box {
@@ -65,7 +105,7 @@
   .submit-btn {
     width: 100%; padding: 14px; font-size: 15px; font-weight: 600;
     border-radius: 8px; border: none; background: #1a1a1a; color: white;
-    cursor: pointer;
+    cursor: pointer; font-family: inherit;
   }
   .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
 
@@ -74,6 +114,7 @@
   .msg.error { background: #fde8e8; color: #b91c1c; }
 
   .note { font-size: 12px; color: #999; margin: 4px 0 0; }
+
   .cal-day {
     aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
     font-size: 13px; border-radius: 8px; border: 1px solid transparent;
@@ -94,10 +135,8 @@
 <div class="container">
   <div class="header">
     <div class="logo">A</div>
-    <div>
-      <h1>AUROS TESLA</h1>
-      <p>一站式改裝預約</p>
-    </div>
+    <h1>AUROS TESLA</h1>
+    <p>一站式改裝預約</p>
   </div>
 
   <div class="card">
@@ -155,25 +194,12 @@
 var API_URL = 'https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
 
 var state = { model: null, gen: null, services: [], subServices: {}, selectedDate: null, slot: null, bookedRanges: [], viewYear: null, viewMonth: null };
-function getTotalMins() {
-  var total = 0;
-  state.services.forEach(function(name) {
-    if (SUB_SERVICES.hasOwnProperty(name)) {
-      var chosen = state.subServices[name] || [];
-      chosen.forEach(function(sub) { total += SUB_SERVICES[name][sub]; });
-    } else {
-      total += SERVICES[name];
-    }
-  });
-  return total;
-}
 var weekdays = ['週日','週一','週二','週三','週四','週五','週六'];
 var needsGen = { 'Model 3': true, 'Model Y': true, 'Model X': false, 'Model S': false };
 var genOptions = {
   'Model 3': ['煥新版 2024-2026', '2021-2023', '2018-2020'],
   'Model Y': ['煥新版 2025-2026', '2021+']
 };
-var SERVICES = {}; // 從後端載入
 var SUB_SERVICES = {}; // 從後端載入
 var CLOSE_HOUR = 18;
 var OPEN_HOUR = 9;
@@ -195,9 +221,6 @@ function isSameDate(a, b) {
 
 /**
  * 取得當下的台灣時間（GMT+8），不受使用者裝置本身的時區設定影響。
- * 做法：取得當下的 UTC 時間戳記，加上 8 小時的毫秒數，
- * 並產生一個「本地時間欄位數值等同台灣時間」的 Date 物件，
- * 這樣後續呼叫 getHours()、getDate() 等方法時，讀到的就是台灣時間的數值。
  */
 function getTaiwanNow() {
   var nowUTC = Date.now();
@@ -206,9 +229,7 @@ function getTaiwanNow() {
 }
 
 /**
- * 把「代表台灣時間數值」的 Date 物件，正確轉換成送給後端的 ISO 字串（含台灣時區標示 +08:00）。
- * 因為 getTaiwanNow() 產生的物件內部數值已經被刻意位移過，
- * 不能直接呼叫 toISOString()（那會再次套用 UTC 轉換造成錯誤），必須手動組合字串。
+ * 把「代表台灣時間數值」的 Date 物件，轉換成送給後端的 ISO 字串（含台灣時區標示 +08:00）。
  */
 function toTaiwanISOString(d) {
   var y = d.getFullYear();
@@ -219,11 +240,20 @@ function toTaiwanISOString(d) {
   var s = (d.getSeconds()+'').padStart(2,'0');
   return y + '-' + m + '-' + day + 'T' + h + ':' + min + ':' + s + '+08:00';
 }
+
 function formatMins(mins) {
   var h = Math.floor(mins/60), m = mins%60;
   if (h > 0 && m > 0) return h + '小時' + m + '分';
   if (h > 0) return h + '小時';
   return m + '分';
+}
+function getTotalMins() {
+  var total = 0;
+  state.services.forEach(function(name) {
+    var chosen = state.subServices[name] || [];
+    chosen.forEach(function(sub) { total += SUB_SERVICES[name][sub]; });
+  });
+  return total;
 }
 function getSlotCount(totalMins) { return Math.max(1, Math.ceil(totalMins/60)); }
 
@@ -241,6 +271,7 @@ fetch(API_URL + '?action=services')
 function renderServiceGroup() {
   var group = document.getElementById('service-group');
   group.innerHTML = '';
+
   Object.keys(SUB_SERVICES).forEach(function(name) {
     var wrapper = document.createElement('div');
 
@@ -288,7 +319,6 @@ function renderServiceGroup() {
         } else {
           if (subIdx !== -1) list.splice(subIdx, 1);
         }
-        // 大項目本身不是按鈕，是否視為「已選取此服務」完全由細項是否有勾選決定
         var hasAnySelected = list.length > 0;
         var idx = state.services.indexOf(name);
         if (hasAnySelected && idx === -1) {
@@ -479,9 +509,9 @@ function renderSlots() {
   grid.innerHTML = '';
   grid.style.display = 'grid';
 
-  var now = new Date();
   var hours = [];
   for (var h = OPEN_HOUR; h < CLOSE_HOUR; h++) hours.push(h);
+  var now = getTaiwanNow();
 
   hours.forEach(function(h) {
     var btn = document.createElement('button');
@@ -526,19 +556,17 @@ function renderSlots() {
 
 function getMissingSubServices() {
   return state.services.filter(function(name) {
-    return SUB_SERVICES.hasOwnProperty(name) && (!state.subServices[name] || state.subServices[name].length === 0);
+    return !state.subServices[name] || state.subServices[name].length === 0;
   });
 }
 
 function getServiceDisplayLabels() {
   var labels = [];
   state.services.forEach(function(name) {
-    if (SUB_SERVICES.hasOwnProperty(name)) {
-      var chosen = state.subServices[name] || [];
-      chosen.forEach(function(sub) { labels.push(name + '-' + sub); });
-    } else {
-      labels.push(name);
-    }
+    var chosen = state.subServices[name] || [];
+    chosen.forEach(function(sub) {
+      labels.push(name === sub ? name : (name + '-' + sub));
+    });
   });
   return labels;
 }
@@ -615,7 +643,6 @@ document.getElementById('confirm-btn').addEventListener('click', function() {
       } else {
         resultMsg.innerHTML = '<div class="msg error">' + (data.error || '預約失敗，請重試') + '</div>';
         btn.disabled = false;
-        // 重新載入時段，避免顯示過期的可用性
         loadAvailabilityAndRenderSlots();
       }
     })
@@ -627,7 +654,7 @@ document.getElementById('confirm-btn').addEventListener('click', function() {
     });
 });
 
-var initToday = new Date();
+var initToday = getTaiwanNow();
 state.viewYear = initToday.getFullYear();
 state.viewMonth = initToday.getMonth();
 renderCalendar();
@@ -693,7 +720,6 @@ document.getElementById('lookup-btn').addEventListener('click', function() {
           cancelBtn.textContent = '取消中...';
 
           var cancelPayload = { action: 'cancel', id: bookingId, phone: phone };
-          console.log('送出取消請求：', cancelPayload);
 
           fetch(API_URL, {
             method: 'POST',
@@ -702,7 +728,6 @@ document.getElementById('lookup-btn').addEventListener('click', function() {
           })
             .then(function(r){ return r.json(); })
             .then(function(data){
-              console.log('取消請求回應：', data);
               if (data.success) {
                 cancelBtn.closest('.summary-box').innerHTML = '<div class="msg success">此預約已取消</div>';
               } else {
@@ -732,6 +757,3 @@ function formatHourMinLocal(date) {
   var h = date.getHours(), m = date.getMinutes();
   return (h < 10 ? '0' + h : h) + ':' + (m < 10 ? '0' + m : m);
 }
-</script>
-</body>
-</html>
