@@ -137,6 +137,21 @@ var CAT={
   '基礎保養/檢測':{'基礎保養/檢測':60}
 };
 
+// 台灣 2026 年國定假日（每年需依公告更新）
+var HOLIDAYS={
+  '2026-01-01':true,'2026-01-02':true,
+  '2026-01-28':true,'2026-01-29':true,'2026-01-30':true,'2026-01-31':true,'2026-02-02':true,
+  '2026-02-28':true,'2026-03-02':true,
+  '2026-04-03':true,'2026-04-04':true,
+  '2026-05-01':true,
+  '2026-06-19':true,
+  '2026-09-25':true,'2026-10-01':true,
+  '2026-10-09':true,'2026-10-10':true
+};
+
+// 後台設定（從 API 載入）
+var CFG={ allow_weekend: false, allow_holiday: false };
+
 var st={
   model:null,gen:null,
   names:[],subs:{},
@@ -146,10 +161,32 @@ var st={
 
 function fm(m){var h=Math.floor(m/60),r=m%60;return h&&r?h+'小時'+r+'分':h?h+'小時':r+'分';}
 function fd(d){return(d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+')';}
+function fmtISO(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function sd(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
 function wk(d){var w=d.getDay();return w===0||w===6;}
+function isHoliday(d){return HOLIDAYS.hasOwnProperty(fmtISO(d));}
+function isDayBlocked(d){
+  if(wk(d)&&!CFG.allow_weekend) return true;
+  if(isHoliday(d)&&!CFG.allow_holiday) return true;
+  return false;
+}
 function tmins(){var t=0;st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){t+=CAT[c][s]||0;});});return t;}
 function lbls(){var o=[];st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){o.push(c===s?c:c+'-'+s);});});return o;}
+
+// 載入後台設定，完成後再初始化月曆
+fetch(API+'?action=settings')
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.success){
+      CFG.allow_weekend = !!d.allow_weekend;
+      CFG.allow_holiday = !!d.allow_holiday;
+    }
+  })
+  .catch(function(){})
+  .finally(function(){
+    var now0=new Date();st.vy=now0.getFullYear();st.vm=now0.getMonth();
+    renderCal();
+  });
 
 /* ── 車型 ── */
 (function(){
