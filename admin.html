@@ -59,6 +59,9 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .other-month .day-num{color:#ccc}
 .wk-cell .day-num{color:#c0392b}
 .today-cell.wk-cell .day-num{background:#c0392b;color:#fff}
+.holiday-name{font-size:10px;color:#c0392b;padding:0 6px 2px;display:block;line-height:1.3}
+.holiday-cell .day-num{color:#c0392b}
+.other-month .holiday-name{display:none}
 
 /* 預約條目 */
 .bk-chip{display:block;margin:1px 4px;padding:2px 6px;border-radius:4px;font-size:11px;cursor:pointer;line-height:1.4;border:none;text-align:left;width:calc(100% - 8px);font-family:inherit;position:relative;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
@@ -186,7 +189,28 @@ var CAT = {
   '基礎保養/檢測':{'基礎保養/檢測':60}
 };
 
-var G = { vy:0, vm:0, all:[], statRange:'today' };
+// 台灣 2026 年國定假日（含補假，依行政院人事總處公告）
+// 格式：'YYYY-MM-DD': '假日名稱'
+// 每年需依最新公告更新
+var TW_HOLIDAYS = {
+  '2026-01-01': '元旦',
+  '2026-01-02': '元旦補假',
+  '2026-01-28': '除夕',
+  '2026-01-29': '春節',
+  '2026-01-30': '春節',
+  '2026-01-31': '春節',
+  '2026-02-02': '春節補假',
+  '2026-02-28': '二二八紀念日',
+  '2026-03-02': '二二八補假',
+  '2026-04-03': '兒童節補假',
+  '2026-04-04': '兒童節/清明節',
+  '2026-05-01': '勞動節',
+  '2026-06-19': '端午節',
+  '2026-09-25': '中秋節',
+  '2026-10-01': '中秋補假',
+  '2026-10-09': '國慶日補假',
+  '2026-10-10': '國慶日'
+};
 var _timer = null;
 
 // ── Session 管理 ──
@@ -334,10 +358,12 @@ function renderCal(){
       var td2=document.createElement('td');
       var dt=cell.date;
       var iso=fmtISO(dt);
+      var isHoliday=TW_HOLIDAYS.hasOwnProperty(iso);
       if(!cell.cur)td2.className='other-month';
       if(sameDay(dt,today))td2.className=(td2.className?td2.className+' ':'')+'today-cell';
       var isWkDay=(dt.getDay()===0||dt.getDay()===6);
-      if(isWkDay)td2.className=(td2.className?td2.className+' ':'')+'wk-cell';
+      if(isWkDay||isHoliday)td2.className=(td2.className?td2.className+' ':'')+'wk-cell';
+      if(isHoliday&&cell.cur)td2.className=(td2.className?td2.className+' ':'')+'holiday-cell';
 
       var dnWrap=document.createElement('div');
       var dn=document.createElement('span');
@@ -345,6 +371,13 @@ function renderCal(){
       dn.textContent=dt.getDate();
       dnWrap.appendChild(dn);
       td2.appendChild(dnWrap);
+
+      if(isHoliday&&cell.cur){
+        var hn=document.createElement('span');
+        hn.className='holiday-name';
+        hn.textContent=TW_HOLIDAYS[iso];
+        td2.appendChild(hn);
+      }
 
       var dayBks=G.all.filter(function(b){return String(b.start_time).indexOf(iso)===0;});
       dayBks.sort(function(a,b){return new Date(a.start_time)-new Date(b.start_time);});
