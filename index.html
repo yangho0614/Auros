@@ -123,7 +123,7 @@ input[type=text],input[type=tel]{width:100%;padding:9px 12px;font-size:16px;bord
 </div>
 <script>
 var API='https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
-var WD=['週日','週一','週二','週三','週四','週五','週六'];
+var WD=['一','二','三','四','五','六','日'];
 
 var NEEDS={'Model 3':true,'Model Y':true};
 var GENS={
@@ -148,10 +148,12 @@ var st={
 };
 
 function fm(m){var h=Math.floor(m/60),r=m%60;return h&&r?h+'小時'+r+'分':h?h+'小時':r+'分';}
-function fd(d){return(d.getMonth()+1)+'/'+d.getDate()+'('+WD[d.getDay()]+')';}
+function fd(d){var wds=['日','一','二','三','四','五','六'];return(d.getMonth()+1)+'/'+d.getDate()+'(週'+wds[d.getDay()]+')';}
 function fmtISO(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
 function sd(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
 function isBlocked(d){return BLOCKED.indexOf(fmtISO(d))!==-1;}
+// 週一為第一天：Mon=0, Tue=1, ..., Sun=6
+function getWeekIndex(d){var w=d.getDay();return w===0?6:w-1;}
 function tmins(){var t=0;st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){t+=CAT[c][s]||0;});});return t;}
 function lbls(){var o=[];st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){o.push(c===s?c:c+'-'+s);});});return o;}
 
@@ -262,7 +264,8 @@ function renderCal(){
   var first=new Date(st.vy,st.vm,1);
   var today=new Date();today.setHours(0,0,0,0);
   var days=new Date(st.vy,st.vm+1,0).getDate();
-  for(var i=0;i<first.getDay();i++){var e=document.createElement('div');e.className='cd em';gd.appendChild(e);}
+  var startOffset=getWeekIndex(first);
+  for(var i=0;i<startOffset;i++){var e=document.createElement('div');e.className='cd em';gd.appendChild(e);}
   for(var d=1;d<=days;d++){
     (function(day){
       var dt=new Date(st.vy,st.vm,day);

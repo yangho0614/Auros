@@ -230,7 +230,7 @@ var API = 'https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8
 var ADMIN_PASSWORD = 'auros2026';
 var SESSION_KEY = 'auros_admin_ts';
 var TIMEOUT_MS  = 15 * 60 * 1000;
-var WD = ['日','一','二','三','四','五','六'];
+var WD = ['一','二','三','四','五','六','日'];
 var WD_FULL = ['週日','週一','週二','週三','週四','週五','週六'];
 var BAR_COLORS = ['c0','c1','c2','c3'];
 var CAT = {
@@ -257,6 +257,8 @@ function fmtISO(d){ return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDa
 function fmtDT(d){ return (d.getMonth()+1)+'/'+d.getDate()+'（'+WD_FULL[d.getDay()]+'）'+p2(d.getHours())+':'+p2(d.getMinutes()); }
 function fmtMins(m){ var h=Math.floor(m/60),r=m%60; return h&&r?h+'小時'+r+'分':h?h+'小時':r+'分'; }
 function sameDay(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
+// 週一為第一天
+function getWeekIndex(d){ var w=d.getDay(); return w===0?6:w-1; }
 function getMins(svcStr){
   var t=0;
   String(svcStr).split('、').forEach(function(s){
@@ -344,7 +346,7 @@ function renderCal(){
   var today=new Date(); today.setHours(0,0,0,0);
   var first=new Date(G.vy,G.vm,1);
   var lastDay=new Date(G.vy,G.vm+1,0).getDate();
-  var startWd=first.getDay();
+  var startWd=getWeekIndex(first);
 
   var cells=[];
   for(var i=0;i<startWd;i++) cells.push({d:new Date(G.vy,G.vm,1-startWd+i),cur:false});
