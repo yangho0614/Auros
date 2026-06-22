@@ -121,7 +121,6 @@ input[type=text],input[type=tel]{width:100%;padding:9px 12px;font-size:16px;bord
 <script>
 var API='https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
 
-// 星期從週一開始
 var WD_LABELS=['一','二','三','四','五','六','日'];
 var WD_FULL=['週日','週一','週二','週三','週四','週五','週六'];
 
@@ -130,48 +129,36 @@ var GENS={
   'Model 3':['煥新版 2024-2026','2021-2023','2018-2020'],
   'Model Y':['煥新版 2025-2026','2021+']
 };
-var CAT={
-  '電系改裝':{'電吸門':60,'幻彩把手':60,'數位儀表板':60},
-  '避震器/煞車系統改裝':{'避震器':60,'煞車系統':60},
-  '外觀套件':{'外觀套件':120},
-  '基礎保養/檢測':{'基礎保養/檢測':60}
-};
 
+// 從後端載入，不再寫死
+var CAT={};
 var BLOCKED=[];
 
 var st={model:null,gen:null,names:[],subs:{},date:null,slot:null,booked:[],vy:0,vm:0};
 
-// ── 工具 ──
 function fm(m){var h=Math.floor(m/60),r=m%60;return h&&r?h+'小時'+r+'分':h?h+'小時':r+'分';}
 function fd(d){return(d.getMonth()+1)+'/'+d.getDate()+'('+WD_FULL[d.getDay()]+')';}
 function p2(n){return String(n).padStart(2,'0');}
 function fmtISO(d){return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
 function sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
 function isBlocked(d){return BLOCKED.indexOf(fmtISO(d))!==-1;}
-// 週一=0, 週二=1, ..., 週日=6
 function weekIdx(d){var w=d.getDay();return w===0?6:w-1;}
-function tmins(){var t=0;st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){t+=CAT[c][s]||0;});});return t;}
+function tmins(){var t=0;st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){t+=(CAT[c]&&CAT[c][s])||0;});});return t;}
 function lbls(){var o=[];st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){o.push(c===s?c:c+'-'+s);});});return o;}
 
-// ── 初始化：先載入封鎖清單，再渲染月曆 ──
+// 同時載入服務目錄和封鎖清單，完成後才初始化
 function initApp(){
-  fetch(API+'?action=blocked_dates')
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(d.success){
-        BLOCKED=d.blocked_dates||[];
-        console.log('blocked_dates 載入成功，共',BLOCKED.length,'筆');
-        console.log('今天 fmtISO:', fmtISO(new Date()));
-        console.log('6/27 是否封鎖:', BLOCKED.indexOf('2026-06-27')!==-1);
-      } else {
-        console.log('blocked_dates 載入失敗', d);
-      }
-    })
-    .catch(function(e){console.log('blocked_dates fetch 錯誤',e);})
-    .then(function(){
-      var now=new Date();st.vy=now.getFullYear();st.vm=now.getMonth();
-      renderCal();
-    });
+  Promise.all([
+    fetch(API+'?action=catalog').then(function(r){return r.json();}),
+    fetch(API+'?action=blocked_dates').then(function(r){return r.json();})
+  ]).then(function(results){
+    if(results[0].success) CAT=results[0].catalog||{};
+    if(results[1].success) BLOCKED=results[1].blocked_dates||[];
+  }).catch(function(){}).then(function(){
+    buildSvc();
+    var now=new Date();st.vy=now.getFullYear();st.vm=now.getMonth();
+    renderCal();
+  });
 }
 initApp();
 

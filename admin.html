@@ -112,7 +112,33 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .day-ov-btn .txt .t2{font-size:12px;color:#888;margin-top:2px}
 .day-ov-divider{border:none;border-top:1px solid #f0f0f0;margin:12px 0}
 
-/* 搜尋結果頁 */
+/* 服務設定 */
+#svc-page{display:none;padding:20px;max-width:600px}
+#svc-page h2{font-size:14px;font-weight:500;margin-bottom:16px}
+.svc-cat-block{border:1px solid #e0e0e0;border-radius:10px;background:#fff;margin-bottom:12px;overflow:hidden}
+.svc-cat-hd{display:flex;align-items:center;padding:12px 14px;gap:10px;background:#f7f7f7;border-bottom:1px solid #e0e0e0}
+.svc-cat-name{flex:1;font-size:14px;font-weight:500}
+.svc-del-cat{padding:4px 10px;font-size:12px;color:#b91c1c;border:1px solid #f0c0c0;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
+.svc-sub-row{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid #f5f5f5;font-size:13px}
+.svc-sub-row .sn{flex:1}
+.svc-sub-row input{width:64px;padding:4px 6px;font-size:13px;border:1px solid #ddd;border-radius:6px;text-align:center;font-family:inherit}
+.svc-sub-row .unit{font-size:12px;color:#888}
+.svc-del-sub{padding:3px 8px;font-size:12px;color:#b91c1c;border:1px solid #f0c0c0;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
+.add-sub-row{display:flex;gap:8px;padding:8px 14px;align-items:center}
+.add-sub-row input{padding:6px 10px;font-size:13px;border:1px solid #ddd;border-radius:7px;font-family:inherit}
+.add-sub-row input.inp-sub{flex:1}
+.add-sub-row input.inp-min{width:70px;text-align:center}
+.add-sub-row button{padding:6px 12px;font-size:12px;border:1px solid #ddd;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit;white-space:nowrap}
+.add-sub-row button:hover{border-color:#999}
+.add-cat-row{display:flex;gap:8px;margin-bottom:16px;align-items:center}
+.add-cat-row input{flex:1;padding:8px 12px;font-size:14px;border:1px solid #ddd;border-radius:8px;font-family:inherit}
+.add-cat-row button{padding:8px 16px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;white-space:nowrap}
+.add-cat-row button:hover{border-color:#999}
+.save-svc-btn{width:100%;padding:12px;font-size:14px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:inherit;margin-top:8px}
+.save-svc-btn:disabled{background:#ccc;cursor:not-allowed}
+.svc-msg{font-size:12px;text-align:center;padding:8px;border-radius:8px;margin-top:8px}
+.svc-msg.ok{background:#e6f7ed;color:#0a7a3d}
+.svc-msg.err{background:#fde8e8;color:#b91c1c}
 #search-page{display:none;padding:20px;max-width:560px}
 #search-page h2{font-size:14px;font-weight:500;margin-bottom:14px}
 .sr-card{border:1px solid #e0e0e0;border-radius:10px;padding:14px;margin-bottom:10px;background:#fff;font-size:13px;line-height:1.8}
@@ -143,6 +169,7 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
   <div class="topbar">
     <div class="logo-sm">A</div>
     <h1>AUROS TESLA 後台管理</h1>
+    <button class="tb-btn" id="svc-toggle">⚙️ 服務設定</button>
     <button class="tb-btn" id="search-toggle">🔍 搜尋客戶</button>
     <button class="tb-btn" id="refresh-btn">↻ 重新整理</button>
     <button class="tb-btn" id="logout-btn">登出</button>
@@ -194,6 +221,18 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
     <h2 id="sp-title"></h2>
     <div id="sp-list"></div>
   </div>
+
+  <!-- 服務設定頁 -->
+  <div id="svc-page">
+    <h2>服務項目設定</h2>
+    <div class="add-cat-row">
+      <input type="text" id="new-cat-inp" placeholder="新增大項目名稱">
+      <button id="add-cat-btn">＋ 新增大項</button>
+    </div>
+    <div id="svc-blocks"></div>
+    <button class="save-svc-btn" id="save-svc-btn">儲存所有服務項目</button>
+    <div id="svc-msg"></div>
+  </div>
 </div>
 
 <!-- Overlay（預約詳情 / 日期設定） -->
@@ -217,7 +256,7 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
       </button>
       <button class="day-ov-btn" id="btn-block">
         <span class="ico">🚫</span>
-        <span class="txt"><div class="t1">不開放預約</div><div class="t2">客戶無法在此日期預約</div></span>
+        <span class="txt"><div class="t1">封鎖此日期</div><div class="t2">客戶無法在此日期預約</div></span>
       </button>
     </div>
     <hr class="day-ov-divider">
@@ -592,7 +631,125 @@ function renderStats(){
   });
 }
 
-/* ── 搜尋 ── */
+/* ── 服務設定 ── */
+var G_CAT = {}; // 目前編輯中的服務目錄
+
+document.getElementById('svc-toggle').onclick = function(){
+  var isOpen = document.getElementById('svc-page').style.display === 'block';
+  hideAllPages();
+  if(!isOpen){
+    document.getElementById('svc-page').style.display = 'block';
+    loadSvcSettings();
+  }
+};
+
+function loadSvcSettings(){
+  fetch(API+'?action=catalog')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      G_CAT = d.success ? JSON.parse(JSON.stringify(d.catalog||{})) : {};
+      renderSvcBlocks();
+    })
+    .catch(function(){ G_CAT={}; renderSvcBlocks(); });
+}
+
+function renderSvcBlocks(){
+  var el=document.getElementById('svc-blocks');
+  el.innerHTML='';
+  Object.keys(G_CAT).forEach(function(cat){
+    var block=document.createElement('div');
+    block.className='svc-cat-block';
+    // 大項標題
+    var hd=document.createElement('div');hd.className='svc-cat-hd';
+    hd.innerHTML='<span class="svc-cat-name">'+cat+'</span>';
+    var delCat=document.createElement('button');
+    delCat.className='svc-del-cat';delCat.textContent='刪除此大項';
+    delCat.onclick=function(){
+      if(!confirm('確定刪除大項「'+cat+'」及其所有細項？'))return;
+      delete G_CAT[cat];renderSvcBlocks();
+    };
+    hd.appendChild(delCat);
+    block.appendChild(hd);
+
+    // 細項列表
+    Object.keys(G_CAT[cat]).forEach(function(sub){
+      var row=document.createElement('div');row.className='svc-sub-row';
+      var minInput=document.createElement('input');
+      minInput.type='number';minInput.min='10';minInput.value=G_CAT[cat][sub];
+      minInput.onchange=function(){
+        var v=parseInt(this.value,10);
+        if(v>0) G_CAT[cat][sub]=v;
+      };
+      var delSub=document.createElement('button');
+      delSub.className='svc-del-sub';delSub.textContent='✕';
+      delSub.onclick=function(){
+        delete G_CAT[cat][sub];renderSvcBlocks();
+      };
+      row.innerHTML='<span class="sn">'+sub+'</span>';
+      row.appendChild(minInput);
+      row.innerHTML+=''; // minInput 已附加，補文字
+      var unit=document.createElement('span');unit.className='unit';unit.textContent='分鐘';
+      row.appendChild(unit);
+      row.appendChild(delSub);
+      // 重新組合（避免 innerHTML 覆蓋）
+      var row2=document.createElement('div');row2.className='svc-sub-row';
+      var nm=document.createElement('span');nm.className='sn';nm.textContent=sub;
+      row2.appendChild(nm);
+      row2.appendChild(minInput);
+      row2.appendChild(unit);
+      row2.appendChild(delSub);
+      block.appendChild(row2);
+    });
+
+    // 新增細項列
+    var addRow=document.createElement('div');addRow.className='add-sub-row';
+    var subInp=document.createElement('input');
+    subInp.type='text';subInp.className='inp-sub';subInp.placeholder='新增細項名稱';
+    var minInp=document.createElement('input');
+    minInp.type='number';minInp.className='inp-min';minInp.placeholder='分鐘';minInp.value='60';
+    var addBtn=document.createElement('button');addBtn.textContent='＋ 新增';
+    addBtn.onclick=function(){
+      var sn=subInp.value.trim();var mn=parseInt(minInp.value,10);
+      if(!sn){alert('請輸入細項名稱');return;}
+      if(!mn||mn<=0){alert('請輸入有效工時（分鐘）');return;}
+      if(G_CAT[cat][sn]!==undefined){alert('此細項已存在');return;}
+      G_CAT[cat][sn]=mn;renderSvcBlocks();
+    };
+    addRow.appendChild(subInp);addRow.appendChild(minInp);addRow.appendChild(addBtn);
+    block.appendChild(addRow);
+    el.appendChild(block);
+  });
+}
+
+// 新增大項
+document.getElementById('add-cat-btn').onclick=function(){
+  var name=document.getElementById('new-cat-inp').value.trim();
+  if(!name){alert('請輸入大項目名稱');return;}
+  if(G_CAT[name]!==undefined){alert('此大項已存在');return;}
+  G_CAT[name]={};
+  document.getElementById('new-cat-inp').value='';
+  renderSvcBlocks();
+};
+
+// 儲存
+document.getElementById('save-svc-btn').onclick=function(){
+  var btn=this;var msg=document.getElementById('svc-msg');
+  btn.disabled=true;btn.textContent='儲存中…';msg.innerHTML='';
+  fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},
+    body:JSON.stringify({action:'save_services',catalog:G_CAT})
+  }).then(function(r){return r.json();})
+    .then(function(d){
+      btn.disabled=false;btn.textContent='儲存所有服務項目';
+      if(d.success){
+        msg.innerHTML='<div class="svc-msg ok">✓ 儲存成功，前台將在下次載入時更新</div>';
+      } else {
+        msg.innerHTML='<div class="svc-msg err">儲存失敗：'+(d.error||'未知錯誤')+'</div>';
+      }
+    }).catch(function(){
+      btn.disabled=false;btn.textContent='儲存所有服務項目';
+      msg.innerHTML='<div class="svc-msg err">連線失敗，請重試</div>';
+    });
+};
 document.getElementById('search-toggle').onclick=function(){
   var bar=document.getElementById('search-bar');
   bar.style.display=bar.style.display==='block'?'none':'block';
@@ -602,6 +759,7 @@ document.getElementById('search-close').onclick=function(){
   document.getElementById('search-bar').style.display='none';
   document.getElementById('search-page').style.display='none';
   document.getElementById('cal-wrap').style.display='block';
+  document.getElementById('svc-page').style.display='none';
 };
 function doSearch(){
   var phone=document.getElementById('search-ph').value.trim();
@@ -609,6 +767,7 @@ function doSearch(){
   var bks=G.all.filter(function(b){ return String(b.customer_phone)===phone; });
   bks.sort(function(a,b){ return new Date(b.start_time)-new Date(a.start_time); });
   document.getElementById('cal-wrap').style.display='none';
+  document.getElementById('svc-page').style.display='none';
   var sp=document.getElementById('search-page'); sp.style.display='block';
   document.getElementById('sp-title').textContent='搜尋結果：'+phone+'（共 '+bks.length+' 筆）';
   var list=document.getElementById('sp-list'); list.innerHTML='';
