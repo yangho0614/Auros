@@ -49,6 +49,7 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .cd.td{border-color:#1a1a1a}
 .cd.sl{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
 .cd.di{color:#ccc;cursor:not-allowed;background:transparent}
+.cd.di.bk{background:repeating-linear-gradient(-45deg,#fef2f2,#fef2f2 3px,#fde8e8 3px,#fde8e8 7px);color:#e0b0b0}
 .cd.em{visibility:hidden}
 
 /* 時段 */
@@ -154,7 +155,11 @@ function initApp(){
   ]).then(function(results){
     if(results[0].success) CAT=results[0].catalog||{};
     if(results[1].success) BLOCKED=results[1].blocked_dates||[];
-  }).catch(function(){}).then(function(){
+    buildSvc();
+    var now=new Date();st.vy=now.getFullYear();st.vm=now.getMonth();
+    renderCal();
+  }).catch(function(){
+    // 即使失敗也要讓月曆顯示
     buildSvc();
     var now=new Date();st.vy=now.getFullYear();st.vm=now.getMonth();
     renderCal();
@@ -195,8 +200,14 @@ function buildGen(){
 }
 
 // ── 服務項目 ──
-(function(){
+function buildSvc(){
   var g=document.getElementById('svc-grp');
+  g.innerHTML='';
+  // 若後端還沒載入（CAT 為空）顯示提示
+  if(!Object.keys(CAT).length){
+    g.innerHTML='<p class="note" style="display:block">服務項目載入中…</p>';
+    return;
+  }
   Object.keys(CAT).forEach(function(cat,ci){
     var blk=document.createElement('div');blk.className='svc-blk';
     var hd=document.createElement('div');hd.className='svc-hd';
@@ -225,7 +236,7 @@ function buildGen(){
     });
     g.appendChild(blk);
   });
-})();
+}
 
 // ── 月曆 ──
 function renderCal(){
@@ -261,8 +272,8 @@ function renderCal(){
         c.classList.add('di');
       } else if(blocked){
         c.classList.add('di');
-        c.style.background='#fff5f5';
-        c.style.color='#ddd';
+        c.classList.add('bk');
+        c.title='此日期不開放預約';
       } else {
         if(isWk) c.style.color='#c0392b';
         c.onclick=function(){st.date=dt;st.slot=null;renderCal();loadSlots();upd();};
