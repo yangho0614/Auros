@@ -380,10 +380,33 @@ document.getElementById('lk-btn').onclick=function(){
         function p2(n){return String(n).padStart(2,'0');}
         var sh2=p2(s.getHours())+':'+p2(s.getMinutes());
         var eh=p2(e.getHours())+':'+p2(e.getMinutes());
-        return '<div style="border:1px solid #eee;border-radius:8px;padding:12px;margin-bottom:8px;font-size:13px;line-height:1.7">'+
+
+        // 解析服務項目字串，組合成帶工時的逐行顯示
+        var svcRaw=String(b.services).split('、');
+        var totalM=0;
+        var svcLines=svcRaw.map(function(label){
+          label=label.trim();
+          // 找出對應工時：先嘗試「大項-細項」格式，再嘗試直接比對大項或細項
+          var mins=0;
+          var dashIdx=label.indexOf('-');
+          if(dashIdx>-1){
+            var cat=label.substring(0,dashIdx);
+            var sub=label.substring(dashIdx+1);
+            if(CAT[cat]&&CAT[cat][sub]!==undefined)mins=CAT[cat][sub];
+          } else {
+            // 大項細項同名的情況（如外觀套件、基礎保養/檢測）
+            if(CAT[label]&&CAT[label][label]!==undefined)mins=CAT[label][label];
+          }
+          totalM+=mins;
+          return label+'（約'+fm(mins)+'）';
+        });
+
+        return '<div style="border:1px solid #eee;border-radius:8px;padding:12px;margin-bottom:8px;font-size:13px;line-height:1.9">'+
           '姓名：'+b.customer_name+'　電話：'+b.customer_phone+'<br>'+
           '車型：'+b.vehicle_model+(b.vehicle_gen?'（'+b.vehicle_gen+'）':'')+'<br>'+
-          '服務：'+b.services+'<br>時間：'+fd(s)+' '+sh2+' 至 '+eh+
+          '服務：'+svcLines.join('<br>　　　')+'<br>'+
+          '工時：預計共約 '+fm(totalM)+'<br>'+
+          '時間：'+fd(s)+' '+sh2+' 至 '+eh+
           '<br><button class="cancel-btn" data-id="'+b.id+'">取消此預約</button></div>';
       }).join('');
       box.querySelectorAll('.cancel-btn').forEach(function(cb){
