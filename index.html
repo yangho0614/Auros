@@ -19,6 +19,7 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .btn:hover{border-color:#999}
 .btn.on{background:#1a1a1a;border-color:#1a1a1a;color:#fff}
 .btn:disabled{opacity:.35;cursor:not-allowed}
+
 /* 服務項目 */
 .svc-wrap{margin-bottom:14px}
 .svc-blk{margin-bottom:8px}
@@ -37,6 +38,7 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .chip.on .ck{background:#1a1a1a;border-color:#1a1a1a}
 .chip.on .ck::after{content:'✓';color:#fff;font-size:10px}
 .dr{margin-left:auto;font-size:11px;color:#aaa}
+
 /* 月曆 */
 .cal-nav{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .mn-lbl{flex:1;text-align:center;font-weight:500;font-size:14px}
@@ -48,18 +50,15 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .cd.sl{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
 .cd.di{color:#ccc;cursor:not-allowed;background:transparent}
 .cd.em{visibility:hidden}
-.cd.wk:not(.di){color:#c0392b}
-.cd.sl.wk{color:#fff}
+
 /* 時段 */
 .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .g3 .btn{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px}
 .g3 .btn .st{font-size:10px;color:#aaa}
 .g3 .btn.on .st{color:#ccc}
-/* 輸入 */
+
 input[type=text],input[type=tel]{width:100%;padding:9px 12px;font-size:16px;border:1px solid #ddd;border-radius:8px;margin-bottom:10px;font-family:inherit}
-/* 摘要 */
 .summ{background:#f0f0f0;border-radius:8px;padding:12px;font-size:13px;line-height:1.7;margin-bottom:14px}
-/* 確認 */
 .cbtn{width:100%;padding:13px;font-size:14px;font-weight:500;border-radius:8px;border:none;background:#1a1a1a;color:#fff;cursor:pointer;font-family:inherit}
 .cbtn:disabled{background:#ccc;cursor:not-allowed}
 .note{font-size:12px;color:#aaa;margin:4px 0 10px}
@@ -78,7 +77,6 @@ input[type=text],input[type=tel]{width:100%;padding:9px 12px;font-size:16px;bord
 </div>
 
 <div class="card">
-
   <span class="lbl">車型</span>
   <div class="g4" id="mdl-grp"></div>
   <div id="gen-grp" style="display:none;margin-bottom:14px"></div>
@@ -105,7 +103,6 @@ input[type=text],input[type=tel]{width:100%;padding:9px 12px;font-size:16px;bord
   <input type="text" id="inp-name" placeholder="請輸入姓名">
   <span class="lbl">聯絡電話</span>
   <input type="tel" id="inp-phone" placeholder="請輸入手機號碼">
-
 </div>
 
 <div class="summ" id="summ">請選擇車型、服務項目與時段</div>
@@ -123,7 +120,10 @@ input[type=text],input[type=tel]{width:100%;padding:9px 12px;font-size:16px;bord
 </div>
 <script>
 var API='https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
-var WD=['一','二','三','四','五','六','日'];
+
+// 星期從週一開始
+var WD_LABELS=['一','二','三','四','五','六','日'];
+var WD_FULL=['週日','週一','週二','週三','週四','週五','週六'];
 
 var NEEDS={'Model 3':true,'Model Y':true};
 var GENS={
@@ -137,49 +137,41 @@ var CAT={
   '基礎保養/檢測':{'基礎保養/檢測':60}
 };
 
-// 封鎖日期清單（從後端載入）
-var BLOCKED = [];
+var BLOCKED=[];
 
-var st={
-  model:null,gen:null,
-  names:[],subs:{},
-  date:null,slot:null,
-  booked:[],vy:0,vm:0
-};
+var st={model:null,gen:null,names:[],subs:{},date:null,slot:null,booked:[],vy:0,vm:0};
 
+// ── 工具 ──
 function fm(m){var h=Math.floor(m/60),r=m%60;return h&&r?h+'小時'+r+'分':h?h+'小時':r+'分';}
-function fd(d){var wds=['日','一','二','三','四','五','六'];return(d.getMonth()+1)+'/'+d.getDate()+'(週'+wds[d.getDay()]+')';}
-function fmtISO(d){return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
-function sd(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
+function fd(d){return(d.getMonth()+1)+'/'+d.getDate()+'('+WD_FULL[d.getDay()]+')';}
+function p2(n){return String(n).padStart(2,'0');}
+function fmtISO(d){return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
+function sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
 function isBlocked(d){return BLOCKED.indexOf(fmtISO(d))!==-1;}
-// 週一為第一天：Mon=0, Tue=1, ..., Sun=6
-function getWeekIndex(d){var w=d.getDay();return w===0?6:w-1;}
+// 週一=0, 週二=1, ..., 週日=6
+function weekIdx(d){var w=d.getDay();return w===0?6:w-1;}
 function tmins(){var t=0;st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){t+=CAT[c][s]||0;});});return t;}
 function lbls(){var o=[];st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){o.push(c===s?c:c+'-'+s);});});return o;}
 
-// 載入封鎖日期清單後初始化月曆
-// 不用 .finally() 確保 iOS Safari 相容性
-function initCalendar(){
-  var now0=new Date();st.vy=now0.getFullYear();st.vm=now0.getMonth();
-  renderCal();
+// ── 初始化：先載入封鎖清單，再渲染月曆 ──
+function initApp(){
+  fetch(API+'?action=blocked_dates')
+    .then(function(r){return r.json();})
+    .then(function(d){if(d.success)BLOCKED=d.blocked_dates||[];})
+    .catch(function(){})
+    .then(function(){
+      // 用 .then 代替 .finally 確保 iOS 相容性
+      var now=new Date();st.vy=now.getFullYear();st.vm=now.getMonth();
+      renderCal();
+    });
 }
+initApp();
 
-fetch(API+'?action=blocked_dates')
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(d.success) BLOCKED=d.blocked_dates||[];
-    initCalendar();
-  })
-  .catch(function(){
-    initCalendar();
-  });
-
-/* ── 車型 ── */
+// ── 車型 ──
 (function(){
   var g=document.getElementById('mdl-grp');
   ['Model 3','Model Y','Model X','Model S'].forEach(function(m){
-    var b=document.createElement('button');
-    b.className='btn';b.textContent=m;
+    var b=document.createElement('button');b.className='btn';b.textContent=m;
     b.onclick=function(){
       g.querySelectorAll('.btn').forEach(function(x){x.classList.remove('on');});
       b.classList.add('on');st.model=m;st.gen=null;st.slot=null;
@@ -190,30 +182,27 @@ fetch(API+'?action=blocked_dates')
 })();
 
 function buildGen(){
-  var g=document.getElementById('gen-grp');
-  g.innerHTML='';
+  var g=document.getElementById('gen-grp');g.innerHTML='';
   if(NEEDS[st.model]){
-    g.style.display='grid';
     var opts=GENS[st.model];
+    g.style.display='grid';
     g.style.gridTemplateColumns='repeat('+Math.min(opts.length,3)+',1fr)';
     g.style.gap='8px';
     opts.forEach(function(v){
-      var b=document.createElement('button');
-      b.className='btn';b.textContent=v;b.style.fontSize='12px';
+      var b=document.createElement('button');b.className='btn';b.textContent=v;b.style.fontSize='12px';
       b.onclick=function(){
         g.querySelectorAll('.btn').forEach(function(x){x.classList.remove('on');});
         b.classList.add('on');st.gen=v;upd();
       };
       g.appendChild(b);
     });
-  }else{g.style.display='none';st.gen=null;}
+  } else {g.style.display='none';st.gen=null;}
 }
 
-/* ── 服務項目 ── */
+// ── 服務項目 ──
 (function(){
   var g=document.getElementById('svc-grp');
-  var catKeys=Object.keys(CAT);
-  catKeys.forEach(function(cat,ci){
+  Object.keys(CAT).forEach(function(cat,ci){
     var blk=document.createElement('div');blk.className='svc-blk';
     var hd=document.createElement('div');hd.className='svc-hd';
     var bjId='bj'+ci;
@@ -230,18 +219,12 @@ function buildGen(){
         chip.classList.toggle('on');
         if(!st.subs[cat])st.subs[cat]=[];
         var arr=st.subs[cat],idx=arr.indexOf(sub);
-        if(chip.classList.contains('on')){
-          if(idx<0)arr.push(sub);
-          if(st.names.indexOf(cat)<0)st.names.push(cat);
-        }else{
-          if(idx>=0)arr.splice(idx,1);
-          if(!arr.length){var ci2=st.names.indexOf(cat);if(ci2>=0)st.names.splice(ci2,1);}
-        }
+        if(chip.classList.contains('on')){if(idx<0)arr.push(sub);if(st.names.indexOf(cat)<0)st.names.push(cat);}
+        else{if(idx>=0)arr.splice(idx,1);if(!arr.length){var ci2=st.names.indexOf(cat);if(ci2>=0)st.names.splice(ci2,1);}}
         var bj=document.getElementById(bjId);
         var n=(st.subs[cat]||[]).length;
-        bj.style.display=n?'inline-block':'none';
-        bj.textContent='已選'+n+'項';
-        st.slot=null;renderSlots();upd();
+        bj.style.display=n?'inline-block':'none';bj.textContent='已選'+n+'項';
+        st.slot=null;loadSlots();upd();
       };
       bd.appendChild(chip);
     });
@@ -249,32 +232,49 @@ function buildGen(){
   });
 })();
 
-/* ── 月曆 ── */
-var now0=new Date();st.vy=now0.getFullYear();st.vm=now0.getMonth();
-renderCal();
-
+// ── 月曆 ──
 function renderCal(){
   var lbl=document.getElementById('mn-lbl');
   var wd=document.getElementById('cal-wd');
   var gd=document.getElementById('cal-gd');
   lbl.textContent=st.vy+'年'+(st.vm+1)+'月';
+
   wd.innerHTML='';
-  WD.forEach(function(w){var d=document.createElement('div');d.textContent=w;wd.appendChild(d);});
+  WD_LABELS.forEach(function(w){
+    var d=document.createElement('div');d.textContent=w;wd.appendChild(d);
+  });
+
   gd.innerHTML='';
   var first=new Date(st.vy,st.vm,1);
   var today=new Date();today.setHours(0,0,0,0);
   var days=new Date(st.vy,st.vm+1,0).getDate();
-  var startOffset=getWeekIndex(first);
-  for(var i=0;i<startOffset;i++){var e=document.createElement('div');e.className='cd em';gd.appendChild(e);}
+
+  // 週一為第一欄，補空格
+  var offset=weekIdx(first);
+  for(var i=0;i<offset;i++){
+    var em=document.createElement('div');em.className='cd em';gd.appendChild(em);
+  }
+
   for(var d=1;d<=days;d++){
     (function(day){
       var dt=new Date(st.vy,st.vm,day);
-      var c=document.createElement('div');c.className='cd';c.textContent=day;
-      if(wk(dt))c.classList.add('wk');
-      if(sd(dt,today))c.classList.add('td');
-      if(dt<today||wk(dt)){c.classList.add('di');}
-      else{c.onclick=function(){st.date=dt;st.slot=null;renderCal();loadSlots();upd();};}
-      if(st.date&&sd(dt,st.date))c.classList.add('sl');
+      var c=document.createElement('div');c.className='cd';
+      var isPast=dt<today;
+      var blocked=isBlocked(dt);
+      var isWk=(dt.getDay()===0||dt.getDay()===6);
+      if(isPast){
+        c.classList.add('di');
+      } else if(blocked){
+        c.classList.add('di');
+        c.style.background='#fff5f5';
+        c.style.color='#ddd';
+      } else {
+        if(isWk) c.style.color='#c0392b';
+        c.onclick=function(){st.date=dt;st.slot=null;renderCal();loadSlots();upd();};
+      }
+      if(sameDay(dt,today))c.classList.add('td');
+      if(st.date&&sameDay(dt,st.date))c.classList.add('sl');
+      c.textContent=day;
       gd.appendChild(c);
     })(d);
   }
@@ -283,7 +283,7 @@ function renderCal(){
 document.getElementById('prev-m').onclick=function(){st.vm--;if(st.vm<0){st.vm=11;st.vy--;}renderCal();};
 document.getElementById('next-m').onclick=function(){st.vm++;if(st.vm>11){st.vm=0;st.vy++;}renderCal();};
 
-/* ── 時段 ── */
+// ── 時段 ──
 function loadSlots(){
   var sg=document.getElementById('slot-grp');
   var ns=document.getElementById('note-svc');
@@ -293,7 +293,7 @@ function loadSlots(){
   if(!st.date){nd.style.display='block';return;}
   if(!st.names.length){ns.style.display='block';return;}
   nl.style.display='block';
-  var iso=st.date.getFullYear()+'-'+('0'+(st.date.getMonth()+1)).slice(-2)+'-'+('0'+st.date.getDate()).slice(-2);
+  var iso=fmtISO(st.date);
   fetch(API+'?action=availability&date='+iso)
     .then(function(r){return r.json();})
     .then(function(data){
@@ -307,13 +307,13 @@ function loadSlots(){
 function renderSlots(){
   var sg=document.getElementById('slot-grp');
   var need=Math.max(1,Math.ceil(tmins()/60));
-  var now1=new Date();
+  var now=new Date();
   sg.innerHTML='';sg.style.display='grid';
   for(var h=9;h<18;h++){
     (function(hour){
       var sd2=new Date(st.date);sd2.setHours(hour,0,0,0);
       var ed=new Date(st.date);ed.setHours(hour+need,0,0,0);
-      var past=sd2<now1,over=hour+need>18;
+      var past=sd2<now,over=hour+need>18;
       var clash=!past&&!over&&st.booked.some(function(r){
         var rs=new Date(st.date),rp=r.start.split(':');rs.setHours(+rp[0],+rp[1],0,0);
         var re=new Date(st.date),ep=r.end.split(':');re.setHours(+ep[0],+ep[1],0,0);
@@ -330,7 +330,7 @@ function renderSlots(){
   }
 }
 
-/* ── 摘要 ── */
+// ── 摘要 ──
 document.getElementById('inp-name').oninput=upd;
 document.getElementById('inp-phone').oninput=upd;
 
@@ -342,24 +342,23 @@ function upd(){
   var mins=tmins(),need=Math.max(1,Math.ceil(mins/60));
   var el=document.getElementById('summ');
   var btn=document.getElementById('cbtn');
+
   if(mok&&sok&&st.date&&st.slot&&name&&phone){
     var sh=parseInt(st.slot);
     var svcLines=[];
     st.names.forEach(function(c){
       (st.subs[c]||[]).forEach(function(s){
         var label=c===s?c:c+'-'+s;
-        var m=CAT[c][s]||0;
-        svcLines.push(label+'（約'+fm(m)+'）');
+        svcLines.push(label+'（約'+fm(CAT[c][s])+'）');
       });
     });
-    el.innerHTML=
-      '姓名：'+name+'　電話：'+phone+'<br>'+
+    el.innerHTML='姓名：'+name+'　電話：'+phone+'<br>'+
       '車型：'+st.model+(st.gen?'（'+st.gen+'）':'')+'<br>'+
       '服務：'+svcLines.join('<br>　　　')+'<br>'+
       '工時：預計共約 '+fm(mins)+'<br>'+
       '時間：'+fd(st.date)+' '+st.slot+' 至 '+(sh+need)+':00';
     btn.disabled=false;
-  }else{
+  } else {
     var miss=[];
     if(!name)miss.push('姓名');if(!phone)miss.push('電話');
     if(!st.model)miss.push('車型');else if(!mok)miss.push('版本');
@@ -369,19 +368,18 @@ function upd(){
   }
 }
 
-/* ── 送出預約 ── */
+// ── 送出預約 ──
 document.getElementById('cbtn').onclick=function(){
   var btn=this,res=document.getElementById('result');
   btn.disabled=true;btn.textContent='送出中…';res.innerHTML='';
   var sh=parseInt(st.slot);
   var startD=new Date(st.date.getFullYear(),st.date.getMonth(),st.date.getDate(),sh,0,0);
-  function p(n){return String(n).padStart(2,'0');}
-  var iso=startD.getFullYear()+'-'+p(startD.getMonth()+1)+'-'+p(startD.getDate())+'T'+p(sh)+':00:00+08:00';
+  var iso2=startD.getFullYear()+'-'+p2(startD.getMonth()+1)+'-'+p2(startD.getDate())+'T'+p2(sh)+':00:00+08:00';
   fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({
     customer_name:document.getElementById('inp-name').value.trim(),
     customer_phone:document.getElementById('inp-phone').value.trim(),
     vehicle_model:st.model,vehicle_gen:st.gen,
-    service_names:st.names,sub_services:st.subs,start_time:iso
+    service_names:st.names,sub_services:st.subs,start_time:iso2
   })}).then(function(r){return r.json();}).then(function(d){
     btn.textContent='確認預約';
     if(d.success){res.innerHTML='<div class="msg-ok">預約已送出，我們將以電話確認</div>';btn.style.display='none';}
@@ -389,7 +387,7 @@ document.getElementById('cbtn').onclick=function(){
   }).catch(function(){btn.textContent='確認預約';btn.disabled=false;res.innerHTML='<div class="msg-err">連線失敗，請重試</div>';});
 };
 
-/* ── 查詢預約 ── */
+// ── 查詢預約 ──
 document.getElementById('lk-btn').onclick=function(){
   var btn=this,phone=document.getElementById('lk-phone').value.trim(),box=document.getElementById('lk-result');
   if(!phone){box.innerHTML='<div class="msg-err">請輸入手機號碼</div>';return;}
@@ -401,30 +399,21 @@ document.getElementById('lk-btn').onclick=function(){
       if(!d.success||!d.bookings.length){box.innerHTML='<div class="msg-err">'+(d.error||'查無預約記錄')+'</div>';return;}
       box.innerHTML=d.bookings.map(function(b){
         var s=new Date(b.start_time),e=new Date(b.end_time);
-        function p2(n){return String(n).padStart(2,'0');}
         var sh2=p2(s.getHours())+':'+p2(s.getMinutes());
         var eh=p2(e.getHours())+':'+p2(e.getMinutes());
-
-        // 解析服務項目字串，組合成帶工時的逐行顯示
         var svcRaw=String(b.services).split('、');
-        var totalM=0;
         var svcLines=svcRaw.map(function(label){
-          label=label.trim();
-          // 找出對應工時：先嘗試「大項-細項」格式，再嘗試直接比對大項或細項
-          var mins=0;
-          var dashIdx=label.indexOf('-');
-          if(dashIdx>-1){
-            var cat=label.substring(0,dashIdx);
-            var sub=label.substring(dashIdx+1);
-            if(CAT[cat]&&CAT[cat][sub]!==undefined)mins=CAT[cat][sub];
-          } else {
-            // 大項細項同名的情況（如外觀套件、基礎保養/檢測）
-            if(CAT[label]&&CAT[label][label]!==undefined)mins=CAT[label][label];
-          }
-          totalM+=mins;
-          return label+'（約'+fm(mins)+'）';
+          label=label.trim();var di=label.indexOf('-'),m=0;
+          if(di>-1){var ct=label.substring(0,di),sb=label.substring(di+1);if(CAT[ct]&&CAT[ct][sb])m=CAT[ct][sb];}
+          else{if(CAT[label]&&CAT[label][label])m=CAT[label][label];}
+          return label+'（約'+fm(m)+'）';
         });
-
+        var totalM=svcRaw.reduce(function(acc,label){
+          label=label.trim();var di=label.indexOf('-'),m=0;
+          if(di>-1){var ct=label.substring(0,di),sb=label.substring(di+1);if(CAT[ct]&&CAT[ct][sb])m=CAT[ct][sb];}
+          else{if(CAT[label]&&CAT[label][label])m=CAT[label][label];}
+          return acc+m;
+        },0);
         return '<div style="border:1px solid #eee;border-radius:8px;padding:12px;margin-bottom:8px;font-size:13px;line-height:1.9">'+
           '姓名：'+b.customer_name+'　電話：'+b.customer_phone+'<br>'+
           '車型：'+b.vehicle_model+(b.vehicle_gen?'（'+b.vehicle_gen+'）':'')+'<br>'+
@@ -445,7 +434,10 @@ document.getElementById('lk-btn').onclick=function(){
             }).catch(function(){cb.disabled=false;cb.textContent='取消此預約';alert('連線失敗');});
         };
       });
-    }).catch(function(){btn.disabled=false;btn.textContent='查詢預約';box.innerHTML='<div class="msg-err">連線失敗，請重試</div>';});
+    }).catch(function(){
+      btn.disabled=false;btn.textContent='查詢預約';
+      box.innerHTML='<div class="msg-err">連線失敗，請重試</div>';
+    });
 };
 </script>
 </body>
