@@ -157,10 +157,18 @@ function lbls(){var o=[];st.names.forEach(function(c){(st.subs[c]||[]).forEach(f
 function initApp(){
   fetch(API+'?action=blocked_dates')
     .then(function(r){return r.json();})
-    .then(function(d){if(d.success)BLOCKED=d.blocked_dates||[];})
-    .catch(function(){})
+    .then(function(d){
+      if(d.success){
+        BLOCKED=d.blocked_dates||[];
+        console.log('blocked_dates 載入成功，共',BLOCKED.length,'筆');
+        console.log('今天 fmtISO:', fmtISO(new Date()));
+        console.log('6/27 是否封鎖:', BLOCKED.indexOf('2026-06-27')!==-1);
+      } else {
+        console.log('blocked_dates 載入失敗', d);
+      }
+    })
+    .catch(function(e){console.log('blocked_dates fetch 錯誤',e);})
     .then(function(){
-      // 用 .then 代替 .finally 確保 iOS 相容性
       var now=new Date();st.vy=now.getFullYear();st.vm=now.getMonth();
       renderCal();
     });
