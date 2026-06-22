@@ -156,15 +156,20 @@ function tmins(){var t=0;st.names.forEach(function(c){(st.subs[c]||[]).forEach(f
 function lbls(){var o=[];st.names.forEach(function(c){(st.subs[c]||[]).forEach(function(s){o.push(c===s?c:c+'-'+s);});});return o;}
 
 // 載入封鎖日期清單後初始化月曆
+// 不用 .finally() 確保 iOS Safari 相容性
+function initCalendar(){
+  var now0=new Date();st.vy=now0.getFullYear();st.vm=now0.getMonth();
+  renderCal();
+}
+
 fetch(API+'?action=blocked_dates')
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.success) BLOCKED=d.blocked_dates||[];
+    initCalendar();
   })
-  .catch(function(){})
-  .finally(function(){
-    var now0=new Date();st.vy=now0.getFullYear();st.vm=now0.getMonth();
-    renderCal();
+  .catch(function(){
+    initCalendar();
   });
 
 /* ── 車型 ── */
