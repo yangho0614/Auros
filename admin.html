@@ -631,6 +631,17 @@ function renderStats(){
   });
 }
 
+/* ── 頁面切換工具 ── */
+function hideAllPages(){
+  document.getElementById('cal-wrap').style.display='none';
+  document.getElementById('search-page').style.display='none';
+  document.getElementById('svc-page').style.display='none';
+}
+function showCal(){
+  hideAllPages();
+  document.getElementById('cal-wrap').style.display='block';
+}
+
 /* ── 服務設定 ── */
 var G_CAT = {}; // 目前編輯中的服務目錄
 
