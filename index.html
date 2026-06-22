@@ -331,7 +331,7 @@ function upd(){
     el.innerHTML=
       '姓名：'+name+'　電話：'+phone+'<br>'+
       '車型：'+st.model+(st.gen?'（'+st.gen+'）':'')+'<br>'+
-      '服務：<br>'+svcLines.map(function(l){return'　'+l;}).join('<br>')+'<br>'+
+      '服務：'+svcLines.join('<br>　　　')+'<br>'+
       '工時：預計共約 '+fm(mins)+'<br>'+
       '時間：'+fd(st.date)+' '+st.slot+' 至 '+(sh+need)+':00';
     btn.disabled=false;
