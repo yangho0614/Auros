@@ -8,88 +8,100 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh}
 
-/* ── 登入 ── */
+/* 登入 */
 #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
 .lc{background:#fff;border:1px solid #e0e0e0;border-radius:16px;padding:32px;width:100%;max-width:340px;text-align:center}
 .lc .logo{width:44px;height:44px;background:#1a1a1a;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:500;margin-bottom:12px}
 .lc h1{font-size:16px;font-weight:500;margin-bottom:4px}
 .lc p{font-size:12px;color:#888;margin-bottom:24px}
-  .lc input{width:100%;padding:10px 12px;font-size:16px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;font-family:inherit}
+.lc input{width:100%;padding:10px 12px;font-size:16px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;font-family:inherit}
 .lc button{width:100%;padding:12px;font-size:14px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:inherit}
-.lc .err{font-size:12px;color:#b91c1c;margin-top:8px}
+.err{font-size:12px;color:#b91c1c;margin-top:8px}
 
-/* ── 主介面 ── */
+/* 主介面 */
 #main-screen{display:none;flex-direction:column;min-height:100vh}
-.topbar{background:#fff;border-bottom:1px solid #e0e0e0;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
-.topbar .logo-sm{width:30px;height:30px;background:#1a1a1a;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:500}
+.topbar{background:#fff;border-bottom:1px solid #e0e0e0;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbar .logo-sm{width:30px;height:30px;background:#1a1a1a;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:500;flex-shrink:0}
 .topbar h1{font-size:14px;font-weight:500;flex:1}
-.topbar .tb-btn{font-size:12px;color:#555;border:1px solid #ddd;border-radius:6px;padding:5px 12px;background:#fff;cursor:pointer;font-family:inherit}
-.topbar .tb-btn:hover{border-color:#999}
-.topbar .tb-btn.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.tb-btn{font-size:12px;color:#555;border:1px solid #ddd;border-radius:6px;padding:5px 12px;background:#fff;cursor:pointer;font-family:inherit;white-space:nowrap}
+.tb-btn:hover{border-color:#999}
 
-/* ── 儀表板條 ── */
-.dashboard{background:#fff;border-bottom:1px solid #e0e0e0;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-shrink:0}
+/* 儀表板 */
+.dashboard{background:#fff;border-bottom:1px solid #e0e0e0;padding:10px 20px;display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap}
 .dash-tabs{display:flex;gap:6px}
 .dash-tab{padding:5px 12px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;font-family:inherit}
 .dash-tab.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
-.dash-divider{width:1px;height:28px;background:#e0e0e0}
+.divider{width:1px;height:28px;background:#e0e0e0;flex-shrink:0}
 .dash-stats{display:flex;gap:20px}
-.ds{display:flex;flex-direction:column}
-.ds .dv{font-size:18px;font-weight:500;line-height:1}
+.ds .dv{font-size:20px;font-weight:500;line-height:1}
 .ds .dl{font-size:11px;color:#888;margin-top:3px}
-.dash-bars{flex:1;display:flex;align-items:center;gap:8px}
+.dash-bars{display:flex;gap:12px;flex-wrap:wrap}
 .db-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#555}
 .db-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.c0{background:#1a1a1a}.c1{background:#4b7be5}.c2{background:#e5844b}.c3{background:#4bc4b0}
 
-/* ── 月曆 ── */
+/* 搜尋列 */
+#search-bar{display:none;padding:10px 20px;background:#fff;border-bottom:1px solid #e0e0e0}
+.search-inner{display:flex;gap:8px;max-width:420px}
+.search-inner input{flex:1;padding:8px 12px;font-size:16px;border:1px solid #ddd;border-radius:8px;font-family:inherit}
+.search-inner button{padding:8px 14px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit}
+.search-inner button:hover{border-color:#999}
+
+/* 月曆 */
 .cal-wrap{flex:1;padding:16px 20px;overflow:auto}
-.cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .cal-nav .m-lbl{font-size:18px;font-weight:500;flex:1}
 .cal-nav button{border:1px solid #ddd;border-radius:7px;background:#fff;padding:6px 14px;cursor:pointer;font-size:13px;font-family:inherit}
 .cal-nav button:hover{border-color:#999}
-.cal-nav .today-btn{font-size:12px;padding:6px 12px}
 .cal-table{width:100%;border-collapse:collapse;table-layout:fixed}
-.cal-table th{font-size:12px;color:#aaa;font-weight:400;padding:4px 6px;border-bottom:1px solid #e0e0e0;text-align:left}
-.cal-table th.wk{color:#c0392b}
-.cal-table td{border:1px solid #e8e8e8;vertical-align:top;padding:0;height:120px;background:#fff}
-.cal-table td.other-month{background:#fafafa}
-.cal-table td.today-cell{background:#fffef0}
-.cal-table td.today-cell .day-num{color:#1a1a1a;font-weight:700;border-bottom:2px solid #1a1a1a;padding-bottom:1px}
-.day-num{font-size:12px;font-weight:500;padding:6px 8px;color:#333;display:inline-block}
-.other-month .day-num{color:#ccc}
-.wk-cell .day-num{color:#c0392b}
-.today-cell.wk-cell .day-num{background:#c0392b;color:#fff}
-.holiday-name{font-size:10px;color:#c0392b;padding:0 6px 2px;display:block;line-height:1.3}
+.cal-table th{font-size:12px;color:#aaa;font-weight:400;padding:4px 6px 8px;border-bottom:1px solid #e0e0e0;text-align:left}
+.cal-table th.wk-h{color:#c0392b}
+.cal-table td{border:1px solid #e8e8e8;vertical-align:top;height:110px;background:#fff;padding:0}
+.cal-table td.other-m{background:#fafafa}
+.cal-table td.today-cell{background:#fffef5}
+.cal-table td.holiday-cell{background:#fff8f8}
+.day-num{font-size:12px;font-weight:500;padding:5px 7px;display:inline-block;color:#333}
+.other-m .day-num{color:#ccc}
+.wk-num{color:#c0392b}
+.today-cell .day-num{font-weight:700;border-bottom:2px solid #1a1a1a;padding-bottom:1px}
+.holiday-name{font-size:10px;color:#c0392b;padding:0 6px 3px;display:block;line-height:1.3}
 .holiday-cell .day-num{color:#c0392b}
-.other-month .holiday-name{display:none}
 
 /* 預約條目 */
-.bk-chip{display:block;margin:1px 4px;padding:2px 6px;border-radius:4px;font-size:11px;cursor:pointer;line-height:1.4;border:none;text-align:left;width:calc(100% - 8px);font-family:inherit;position:relative;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.bk-chip{display:block;margin:1px 4px;padding:2px 6px;border-radius:4px;font-size:11px;cursor:pointer;line-height:1.5;border:none;text-align:left;width:calc(100% - 8px);font-family:inherit;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .bk-chip.confirmed{background:#dbeafe;color:#1e40af}
 .bk-chip.cancelled{background:#f3f4f6;color:#9ca3af;text-decoration:line-through}
-.bk-chip:hover{filter:brightness(.95)}
-.more-chip{display:block;margin:1px 4px;padding:2px 6px;font-size:11px;color:#888;cursor:pointer;background:none;border:none;text-align:left;font-family:inherit}
+.bk-chip:hover{filter:brightness(.93)}
+.more-chip{display:block;margin:1px 4px;padding:1px 6px;font-size:11px;color:#888;cursor:pointer;background:none;border:none;text-align:left;font-family:inherit}
 .more-chip:hover{color:#333}
 
-/* ── 詳細資訊 Overlay ── */
-#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center}
+/* Overlay */
+#overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;padding:16px}
 #overlay.show{display:flex}
-.overlay-card{background:#fff;border-radius:14px;padding:24px;width:100%;max-width:400px;margin:16px;max-height:85vh;overflow-y:auto}
+.ov-card{background:#fff;border-radius:14px;padding:22px;width:100%;max-width:400px;max-height:85vh;overflow-y:auto}
 .ov-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
 .ov-top h2{font-size:15px;font-weight:500}
-.ov-close{background:none;border:none;font-size:20px;cursor:pointer;color:#aaa;padding:0;line-height:1}
+.ov-close{background:none;border:none;font-size:22px;cursor:pointer;color:#aaa;line-height:1;padding:0}
 .ov-close:hover{color:#333}
 .ov-row{display:flex;gap:8px;margin-bottom:8px;font-size:13px;line-height:1.6}
-.ov-lbl{color:#888;width:42px;flex-shrink:0}
-.ov-val{color:#1a1a1a;flex:1}
+.ov-lbl{color:#888;width:44px;flex-shrink:0}
+.ov-val{flex:1;color:#1a1a1a}
+.ov-hr{border:none;border-top:1px solid #f0f0f0;margin:12px 0}
 .badge-ok{display:inline-block;background:#e6f7ed;color:#0a7a3d;font-size:11px;padding:2px 8px;border-radius:10px}
 .badge-cx{display:inline-block;background:#f0f0f0;color:#999;font-size:11px;padding:2px 8px;border-radius:10px}
-.ov-cancel-btn{margin-top:16px;width:100%;padding:10px;font-size:13px;color:#b91c1c;border:1px solid #f0c0c0;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit}
-.ov-cancel-btn:hover{background:#fff5f5}
-.ov-divider{border:none;border-top:1px solid #f0f0f0;margin:14px 0}
+.ov-cancel{margin-top:14px;width:100%;padding:10px;font-size:13px;color:#b91c1c;border:1px solid #f0c0c0;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit}
+.ov-cancel:hover{background:#fff5f5}
 
-/* 統計顏色 */
-.c0{background:#1a1a1a}.c1{background:#4b7be5}.c2{background:#e5844b}.c3{background:#4bc4b0}
+/* 搜尋結果頁 */
+#search-page{display:none;padding:20px;max-width:560px}
+#search-page h2{font-size:14px;font-weight:500;margin-bottom:14px}
+.sr-card{border:1px solid #e0e0e0;border-radius:10px;padding:14px;margin-bottom:10px;background:#fff;font-size:13px;line-height:1.8}
+.sr-card.cx{opacity:.6}
+.sr-top{display:flex;justify-content:space-between;margin-bottom:4px}
+.sr-name{font-size:14px;font-weight:500}
+.sr-view{margin-top:10px;width:100%;padding:8px;font-size:12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit}
+.sr-view:hover{border-color:#999}
+.empty{font-size:13px;color:#aaa;padding:20px 0;text-align:center}
 </style>
 </head>
 <body>
@@ -111,63 +123,58 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
   <div class="topbar">
     <div class="logo-sm">A</div>
     <h1>AUROS TESLA 後台管理</h1>
-    <button class="tb-btn" id="view-cal" style="display:none">月曆</button>
     <button class="tb-btn" id="search-toggle">🔍 搜尋客戶</button>
     <button class="tb-btn" id="refresh-btn">↻ 重新整理</button>
     <button class="tb-btn" id="logout-btn">登出</button>
   </div>
 
-  <!-- 儀表板 -->
   <div class="dashboard">
     <div class="dash-tabs">
       <button class="dash-tab on" data-r="today">今日</button>
       <button class="dash-tab" data-r="week">本週</button>
       <button class="dash-tab" data-r="month">本月</button>
     </div>
-    <div class="dash-divider"></div>
+    <div class="divider"></div>
     <div class="dash-stats">
       <div class="ds"><div class="dv" id="st-count">—</div><div class="dl">已確認預約</div></div>
       <div class="ds"><div class="dv" id="st-hours">—</div><div class="dl">總工時（小時）</div></div>
     </div>
-    <div class="dash-divider"></div>
+    <div class="divider"></div>
     <div class="dash-bars" id="dash-bars"></div>
   </div>
 
-  <!-- 搜尋列（預設隱藏） -->
-  <div id="search-bar" style="display:none;padding:10px 20px;background:#fff;border-bottom:1px solid #e0e0e0">
-    <div style="display:flex;gap:8px;max-width:400px">
-      <input type="tel" id="search-ph" placeholder="輸入手機號碼搜尋" style="flex:1;padding:8px 12px;font-size:13px;border:1px solid #ddd;border-radius:8px;font-family:inherit">
-      <button id="search-btn" style="padding:8px 16px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit">搜尋</button>
-      <button id="search-close" style="padding:8px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer">✕</button>
+  <div id="search-bar">
+    <div class="search-inner">
+      <input type="tel" id="search-ph" placeholder="輸入手機號碼搜尋">
+      <button id="search-btn">搜尋</button>
+      <button id="search-close">✕</button>
     </div>
   </div>
 
-  <!-- 月曆 -->
   <div class="cal-wrap" id="cal-wrap">
     <div class="cal-nav">
       <span class="m-lbl" id="m-lbl"></span>
-      <button class="today-btn" id="to-today">今天</button>
+      <button id="to-today">今天</button>
       <button id="prev-m">←</button>
       <button id="next-m">→</button>
     </div>
-    <table class="cal-table" id="cal-table">
+    <table class="cal-table">
       <thead><tr id="cal-th"></tr></thead>
       <tbody id="cal-body"></tbody>
     </table>
   </div>
 
-  <!-- 搜尋結果頁（預設隱藏） -->
-  <div id="search-result-page" style="display:none;padding:20px;max-width:600px">
-    <h2 style="font-size:14px;font-weight:500;margin-bottom:14px" id="search-result-title"></h2>
-    <div id="search-result-list"></div>
+  <div id="search-page">
+    <h2 id="sp-title"></h2>
+    <div id="sp-list"></div>
   </div>
 </div>
 
-<!-- 詳細資訊 Overlay -->
+<!-- Overlay -->
 <div id="overlay">
-  <div class="overlay-card">
+  <div class="ov-card">
     <div class="ov-top">
-      <h2 id="ov-title">預約詳情</h2>
+      <h2 id="ov-title"></h2>
       <button class="ov-close" id="ov-close">×</button>
     </div>
     <div id="ov-body"></div>
@@ -175,227 +182,206 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 </div>
 
 <script>
+// ─── 設定 ───────────────────────────────────────────────
 var API = 'https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
 var ADMIN_PASSWORD = 'auros2026';
-var SESSION_KEY = 'auros_admin_session';
-var TIMEOUT_MS = 15 * 60 * 1000; // 15 分鐘
-var WD_SHORT = ['日','一','二','三','四','五','六'];
-var WD_FULL  = ['週日','週一','週二','週三','週四','週五','週六'];
+var SESSION_KEY = 'auros_admin_ts';
+var TIMEOUT_MS  = 15 * 60 * 1000;
+
+var WD = ['日','一','二','三','四','五','六'];
+var WD_FULL = ['週日','週一','週二','週三','週四','週五','週六'];
 var BAR_COLORS = ['c0','c1','c2','c3'];
+
 var CAT = {
-  '電系改裝':{'電吸門':60,'幻彩把手':60,'數位儀表板':60},
-  '避震器/煞車系統改裝':{'避震器':60,'煞車系統':60},
-  '外觀套件':{'外觀套件':120},
-  '基礎保養/檢測':{'基礎保養/檢測':60}
+  '電系改裝':     {'電吸門':60,'幻彩把手':60,'數位儀表板':60},
+  '避震器/煞車系統改裝': {'避震器':60,'煞車系統':60},
+  '外觀套件':     {'外觀套件':120},
+  '基礎保養/檢測': {'基礎保養/檢測':60}
 };
 
-// 台灣 2026 年國定假日（含補假，依行政院人事總處公告）
-// 格式：'YYYY-MM-DD': '假日名稱'
-// 每年需依最新公告更新
-var TW_HOLIDAYS = {
-  '2026-01-01': '元旦',
-  '2026-01-02': '元旦補假',
-  '2026-01-28': '除夕',
-  '2026-01-29': '春節',
-  '2026-01-30': '春節',
-  '2026-01-31': '春節',
-  '2026-02-02': '春節補假',
-  '2026-02-28': '二二八紀念日',
-  '2026-03-02': '二二八補假',
-  '2026-04-03': '兒童節補假',
-  '2026-04-04': '兒童節/清明節',
-  '2026-05-01': '勞動節',
-  '2026-06-19': '端午節',
-  '2026-09-25': '中秋節',
-  '2026-10-01': '中秋補假',
-  '2026-10-09': '國慶日補假',
-  '2026-10-10': '國慶日'
+// 台灣 2026 年國定假日（依行政院人事總處公告，每年年初需更新）
+var HOLIDAYS = {
+  '2026-01-01':'元旦',
+  '2026-01-02':'元旦補假',
+  '2026-01-28':'除夕',
+  '2026-01-29':'春節',
+  '2026-01-30':'春節',
+  '2026-01-31':'春節',
+  '2026-02-02':'春節補假',
+  '2026-02-28':'二二八紀念日',
+  '2026-03-02':'二二八補假',
+  '2026-04-03':'兒童節補假',
+  '2026-04-04':'兒童節/清明',
+  '2026-05-01':'勞動節',
+  '2026-06-19':'端午節',
+  '2026-09-25':'中秋節',
+  '2026-10-01':'中秋補假',
+  '2026-10-09':'國慶補假',
+  '2026-10-10':'國慶日'
 };
+
+var G = { vy:0, vm:0, all:[], range:'today' };
 var _timer = null;
 
-// ── Session 管理 ──
-function saveSession(){
-  try{ localStorage.setItem(SESSION_KEY, String(Date.now())); }catch(e){}
+// ─── 工具函式 ────────────────────────────────────────────
+function p2(n){ return String(n).padStart(2,'0'); }
+function fmtISO(d){ return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate()); }
+function fmtDTFull(d){
+  return (d.getMonth()+1)+'/'+d.getDate()+'（'+WD_FULL[d.getDay()]+'）'+p2(d.getHours())+':'+p2(d.getMinutes());
 }
-function clearSession(){
-  try{ localStorage.removeItem(SESSION_KEY); }catch(e){}
+function fmtMins(m){ var h=Math.floor(m/60),r=m%60; return h&&r?h+'小時'+r+'分':h?h+'小時':r+'分'; }
+function sameDay(a,b){
+  return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
 }
-function checkSession(){
-  try{
-    var ts = parseInt(localStorage.getItem(SESSION_KEY)||'0',10);
-    return ts && (Date.now()-ts) < TIMEOUT_MS;
-  }catch(e){ return false; }
-}
-function resetTimer(){
-  saveSession();
-  clearTimeout(_timer);
-  _timer = setTimeout(function(){
-    autoLogout();
-  }, TIMEOUT_MS);
-}
-function autoLogout(){
-  clearSession();
-  doLogout();
-  alert('閒置超過 15 分鐘，已自動登出');
-}
-
-// 任何使用者操作都重置計時器
-['click','keydown','mousemove','touchstart'].forEach(function(evt){
-  document.addEventListener(evt, function(){
-    if(checkSession()) resetTimer();
-  }, {passive:true});
-});
-
-function p2(n){return String(n).padStart(2,'0');}
-function fmtISO(d){return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
-function fmtDT(d){return (d.getMonth()+1)+'/'+d.getDate()+'（'+WD_FULL[d.getDay()]+'）'+p2(d.getHours())+':'+p2(d.getMinutes());}
 function getMins(svcStr){
   var t=0;
   String(svcStr).split('、').forEach(function(s){
-    s=s.trim();var di=s.indexOf('-'),m=0;
-    if(di>-1){var c=s.substring(0,di),sub=s.substring(di+1);if(CAT[c]&&CAT[c][sub])m=CAT[c][sub];}
-    else{if(CAT[s]&&CAT[s][s])m=CAT[s][s];}
+    s=s.trim(); var di=s.indexOf('-'), m=0;
+    if(di>-1){ var c=s.substring(0,di),sub=s.substring(di+1); if(CAT[c]&&CAT[c][sub])m=CAT[c][sub]; }
+    else{ if(CAT[s]&&CAT[s][s])m=CAT[s][s]; }
     t+=m;
   });
   return t;
 }
-function fmtMins(m){var h=Math.floor(m/60),r=m%60;return h&&r?h+'小時'+r+'分':h?h+'小時':r+'分';}
-function svcLinesArr(svcStr){
+function getSvcLines(svcStr){
   return String(svcStr).split('、').map(function(s){
-    s=s.trim();var di=s.indexOf('-'),m=0;
-    if(di>-1){var c=s.substring(0,di),sub=s.substring(di+1);if(CAT[c]&&CAT[c][sub])m=CAT[c][sub];}
-    else{if(CAT[s]&&CAT[s][s])m=CAT[s][s];}
+    s=s.trim(); var di=s.indexOf('-'), m=0;
+    if(di>-1){ var c=s.substring(0,di),sub=s.substring(di+1); if(CAT[c]&&CAT[c][sub])m=CAT[c][sub]; }
+    else{ if(CAT[s]&&CAT[s][s])m=CAT[s][s]; }
     return s+'（約'+fmtMins(m)+'）';
   });
 }
 
-/* ── 登入 ── */
+// ─── Session ─────────────────────────────────────────────
+function saveSession(){ try{ localStorage.setItem(SESSION_KEY,String(Date.now())); }catch(e){} }
+function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+function checkSession(){
+  try{ var ts=parseInt(localStorage.getItem(SESSION_KEY)||'0',10); return ts&&(Date.now()-ts)<TIMEOUT_MS; }
+  catch(e){ return false; }
+}
+function resetTimer(){
+  saveSession();
+  clearTimeout(_timer);
+  _timer=setTimeout(function(){ clearSession(); doLogout(); alert('閒置超過 15 分鐘，已自動登出'); }, TIMEOUT_MS);
+}
+['click','keydown','mousemove','touchstart'].forEach(function(e){
+  document.addEventListener(e,function(){ if(checkSession())resetTimer(); },{passive:true});
+});
+
+// ─── 登入 / 登出 ─────────────────────────────────────────
 function doLogin(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('main-screen').style.display='flex';
-  var now=new Date();G.vy=now.getFullYear();G.vm=now.getMonth();
-  resetTimer();
-  loadAll();
+  var now=new Date(); G.vy=now.getFullYear(); G.vm=now.getMonth();
+  resetTimer(); loadAll();
 }
 function doLogout(){
-  clearTimeout(_timer);
-  clearSession();
+  clearTimeout(_timer); clearSession();
   document.getElementById('main-screen').style.display='none';
   document.getElementById('login-screen').style.display='flex';
-  document.getElementById('pw').value='';
-  G.all=[];
+  document.getElementById('pw').value=''; G.all=[];
 }
 
-document.getElementById('login-btn').onclick = function(){
-  if(document.getElementById('pw').value === ADMIN_PASSWORD){
-    document.getElementById('login-err').textContent='';
-    doLogin();
-  } else {
-    document.getElementById('login-err').textContent='密碼錯誤，請重試';
-  }
+document.getElementById('login-btn').onclick=function(){
+  if(document.getElementById('pw').value===ADMIN_PASSWORD){
+    document.getElementById('login-err').textContent=''; doLogin();
+  } else { document.getElementById('login-err').textContent='密碼錯誤，請重試'; }
 };
-document.getElementById('pw').onkeydown=function(e){if(e.key==='Enter')document.getElementById('login-btn').click();};
+document.getElementById('pw').onkeydown=function(e){ if(e.key==='Enter')document.getElementById('login-btn').click(); };
 document.getElementById('logout-btn').onclick=doLogout;
-document.getElementById('refresh-btn').onclick=function(){resetTimer();loadAll();};
+document.getElementById('refresh-btn').onclick=function(){ resetTimer(); loadAll(); };
 
-// 頁面載入時檢查 Session，若仍有效則自動恢復登入
-(function(){
-  if(checkSession()){
-    doLogin();
-  }
-})();
-document.getElementById('refresh-btn').onclick=loadAll;
+// 頁面載入自動恢復 Session
+if(checkSession()){ doLogin(); }
 
-/* ── 載入所有預約 ── */
+// ─── 資料載入 ────────────────────────────────────────────
 function loadAll(){
   document.getElementById('m-lbl').textContent='載入中…';
   fetch(API+'?action=bookings')
-    .then(function(r){return r.json();})
-    .then(function(d){G.all=d.success?(d.bookings||[]):[];renderAll();})
-    .catch(function(){G.all=[];renderAll();});
+    .then(function(r){ return r.json(); })
+    .then(function(d){ G.all=d.success?(d.bookings||[]):[];  renderCal(); renderStats(); })
+    .catch(function(){ G.all=[]; renderCal(); renderStats(); });
 }
-function renderAll(){renderCal();renderStats();}
 
-/* ── 月曆 ── */
+// ─── 月曆 ────────────────────────────────────────────────
 function renderCal(){
   document.getElementById('m-lbl').textContent=G.vy+'年'+(G.vm+1)+'月';
+
+  // 星期標題
   var th=document.getElementById('cal-th');
   th.innerHTML='';
-  WD_SHORT.forEach(function(w,i){
+  WD.forEach(function(w,i){
     var td=document.createElement('th');
     td.textContent=w;
-    if(i===0||i===6)td.className='wk';
+    if(i===0||i===6) td.className='wk-h';
     th.appendChild(td);
   });
 
   var tbody=document.getElementById('cal-body');
   tbody.innerHTML='';
-  var today=new Date();today.setHours(0,0,0,0);
-  var first=new Date(G.vy,G.vm,1);
-  var last=new Date(G.vy,G.vm+1,0);
-  var startDay=first.getDay();
-  var totalDays=last.getDate();
 
+  var today=new Date(); today.setHours(0,0,0,0);
+  var first=new Date(G.vy,G.vm,1);
+  var lastDay=new Date(G.vy,G.vm+1,0).getDate();
+  var startWd=first.getDay();
+
+  // 建立格子陣列
   var cells=[];
-  for(var i=0;i<startDay;i++){
-    var pd=new Date(G.vy,G.vm,1-startDay+i);
-    cells.push({date:pd,cur:false});
-  }
-  for(var d=1;d<=totalDays;d++){
-    cells.push({date:new Date(G.vy,G.vm,d),cur:true});
-  }
-  var remain=7-cells.length%7;
-  if(remain<7){
-    for(var j=1;j<=remain;j++){
-      cells.push({date:new Date(G.vy,G.vm+1,j),cur:false});
-    }
-  }
+  for(var i=0;i<startWd;i++) cells.push({d:new Date(G.vy,G.vm,1-startWd+i),cur:false});
+  for(var d=1;d<=lastDay;d++) cells.push({d:new Date(G.vy,G.vm,d),cur:true});
+  var tail=cells.length%7; if(tail>0){ for(var j=1;j<=7-tail;j++) cells.push({d:new Date(G.vy,G.vm+1,j),cur:false}); }
 
   for(var r=0;r<cells.length/7;r++){
     var tr=document.createElement('tr');
     for(var c=0;c<7;c++){
       var cell=cells[r*7+c];
-      var td2=document.createElement('td');
-      var dt=cell.date;
+      var dt=cell.d;
       var iso=fmtISO(dt);
-      var isHoliday=TW_HOLIDAYS.hasOwnProperty(iso);
-      if(!cell.cur)td2.className='other-month';
-      if(sameDay(dt,today))td2.className=(td2.className?td2.className+' ':'')+'today-cell';
-      var isWkDay=(dt.getDay()===0||dt.getDay()===6);
-      if(isWkDay||isHoliday)td2.className=(td2.className?td2.className+' ':'')+'wk-cell';
-      if(isHoliday&&cell.cur)td2.className=(td2.className?td2.className+' ':'')+'holiday-cell';
+      var isWk=(dt.getDay()===0||dt.getDay()===6);
+      var isHol=HOLIDAYS.hasOwnProperty(iso);
+      var isTd=sameDay(dt,today);
 
-      var dnWrap=document.createElement('div');
+      var td2=document.createElement('td');
+      var cls=[];
+      if(!cell.cur) cls.push('other-m');
+      if(isTd)      cls.push('today-cell');
+      if(isHol&&cell.cur) cls.push('holiday-cell');
+      if(cls.length) td2.className=cls.join(' ');
+
+      // 日期數字
       var dn=document.createElement('span');
-      dn.className='day-num';
+      dn.className='day-num'+(isWk||isHol?' wk-num':'');
       dn.textContent=dt.getDate();
-      dnWrap.appendChild(dn);
-      td2.appendChild(dnWrap);
+      td2.appendChild(dn);
 
-      if(isHoliday&&cell.cur){
+      // 假日名稱
+      if(isHol&&cell.cur){
         var hn=document.createElement('span');
         hn.className='holiday-name';
-        hn.textContent=TW_HOLIDAYS[iso];
+        hn.textContent=HOLIDAYS[iso];
         td2.appendChild(hn);
       }
 
-      var dayBks=G.all.filter(function(b){return String(b.start_time).indexOf(iso)===0;});
-      dayBks.sort(function(a,b){return new Date(a.start_time)-new Date(b.start_time);});
-      var maxShow=3;
-      dayBks.slice(0,maxShow).forEach(function(b){
-        var chip=document.createElement('button');
-        chip.className='bk-chip '+(b.status==='已確認'?'confirmed':'cancelled');
-        var s=new Date(b.start_time);
-        chip.textContent=p2(s.getHours())+':'+p2(s.getMinutes())+' '+b.customer_name;
-        chip.onclick=function(e){e.stopPropagation();showOverlay(b);};
-        td2.appendChild(chip);
-      });
-      if(dayBks.length>maxShow){
-        var more=document.createElement('button');
-        more.className='more-chip';
-        more.textContent='還有 '+(dayBks.length-maxShow)+' 筆…';
-        more.onclick=function(e){e.stopPropagation();showDayModal(dt,dayBks);};
-        td2.appendChild(more);
+      // 預約條目
+      if(cell.cur){
+        var dayBks=G.all.filter(function(b){ return String(b.start_time).indexOf(iso)===0; });
+        dayBks.sort(function(a,b){ return new Date(a.start_time)-new Date(b.start_time); });
+        var maxShow=2;
+        dayBks.slice(0,maxShow).forEach(function(b){
+          var chip=document.createElement('button');
+          chip.className='bk-chip '+(b.status==='已確認'?'confirmed':'cancelled');
+          var s=new Date(b.start_time);
+          chip.textContent=p2(s.getHours())+':'+p2(s.getMinutes())+' '+b.customer_name;
+          chip.onclick=(function(bk){ return function(e){ e.stopPropagation(); showOverlay(bk); }; })(b);
+          td2.appendChild(chip);
+        });
+        if(dayBks.length>maxShow){
+          var more=document.createElement('button');
+          more.className='more-chip';
+          more.textContent='還有 '+(dayBks.length-maxShow)+' 筆…';
+          more.onclick=(function(bks,dt2){ return function(e){ e.stopPropagation(); showDayList(dt2,bks); }; })(dayBks,dt);
+          td2.appendChild(more);
+        }
       }
       tr.appendChild(td2);
     }
@@ -403,173 +389,164 @@ function renderCal(){
   }
 }
 
-function sameDay(a,b){
-  return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
-}
+document.getElementById('prev-m').onclick=function(){ G.vm--; if(G.vm<0){G.vm=11;G.vy--;} renderCal(); };
+document.getElementById('next-m').onclick=function(){ G.vm++; if(G.vm>11){G.vm=0;G.vy++;} renderCal(); };
+document.getElementById('to-today').onclick=function(){ var n=new Date(); G.vy=n.getFullYear(); G.vm=n.getMonth(); renderCal(); };
 
-document.getElementById('prev-m').onclick=function(){G.vm--;if(G.vm<0){G.vm=11;G.vy--;}renderCal();};
-document.getElementById('next-m').onclick=function(){G.vm++;if(G.vm>11){G.vm=0;G.vy++;}renderCal();};
-document.getElementById('to-today').onclick=function(){var n=new Date();G.vy=n.getFullYear();G.vm=n.getMonth();renderCal();};
-
-/* ── Overlay 預約詳情 ── */
+// ─── Overlay ─────────────────────────────────────────────
 function showOverlay(b){
-  var s=new Date(b.start_time),e=new Date(b.end_time);
-  var lines=svcLinesArr(b.services);
-  var totalM=getMins(b.services);
+  var s=new Date(b.start_time), e=new Date(b.end_time);
   var isCx=b.status==='已取消';
+  var lines=getSvcLines(b.services);
+  var totalM=getMins(b.services);
   document.getElementById('ov-title').textContent=b.customer_name+' 的預約';
   document.getElementById('ov-body').innerHTML=
     '<div class="ov-row"><span class="ov-lbl">狀態</span><span class="ov-val"><span class="'+(isCx?'badge-cx':'badge-ok')+'">'+b.status+'</span></span></div>'+
     '<div class="ov-row"><span class="ov-lbl">姓名</span><span class="ov-val">'+b.customer_name+'</span></div>'+
     '<div class="ov-row"><span class="ov-lbl">電話</span><span class="ov-val">'+b.customer_phone+'</span></div>'+
     '<div class="ov-row"><span class="ov-lbl">車型</span><span class="ov-val">'+b.vehicle_model+(b.vehicle_gen?'（'+b.vehicle_gen+'）':'')+'</span></div>'+
-    '<hr class="ov-divider">'+
+    '<hr class="ov-hr">'+
     '<div class="ov-row"><span class="ov-lbl">服務</span><span class="ov-val">'+lines.join('<br>')+'</span></div>'+
     '<div class="ov-row"><span class="ov-lbl">工時</span><span class="ov-val">共約 '+fmtMins(totalM)+'</span></div>'+
-    '<hr class="ov-divider">'+
-    '<div class="ov-row"><span class="ov-lbl">開始</span><span class="ov-val">'+fmtDT(s)+'</span></div>'+
+    '<hr class="ov-hr">'+
+    '<div class="ov-row"><span class="ov-lbl">開始</span><span class="ov-val">'+fmtDTFull(s)+'</span></div>'+
     '<div class="ov-row"><span class="ov-lbl">結束</span><span class="ov-val">'+p2(e.getHours())+':'+p2(e.getMinutes())+'</span></div>'+
-    '<div class="ov-row"><span class="ov-lbl">編號</span><span class="ov-val" style="color:#aaa;font-size:11px">'+b.id+'</span></div>'+
-    (isCx?'':'<button class="ov-cancel-btn" id="ov-cancel-btn">取消此預約</button>');
+    '<div class="ov-row"><span class="ov-lbl">編號</span><span class="ov-val" style="font-size:11px;color:#aaa">'+b.id+'</span></div>'+
+    (isCx?'':'<button class="ov-cancel" id="ov-cx-btn">取消此預約</button>');
   document.getElementById('overlay').classList.add('show');
   if(!isCx){
-    document.getElementById('ov-cancel-btn').onclick=function(){
+    document.getElementById('ov-cx-btn').onclick=function(){
       if(!confirm('確定要取消 '+b.customer_name+' 的預約嗎？'))return;
-      var btn=document.getElementById('ov-cancel-btn');
-      btn.disabled=true;btn.textContent='取消中…';
+      var btn=document.getElementById('ov-cx-btn');
+      btn.disabled=true; btn.textContent='取消中…';
       fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},
         body:JSON.stringify({action:'cancel',id:b.id,admin:true})
       }).then(function(r){return r.json();}).then(function(d){
-        if(d.success){closeOverlay();loadAll();}
-        else{btn.disabled=false;btn.textContent='取消此預約';alert(d.error||'取消失敗');}
-      }).catch(function(){btn.disabled=false;btn.textContent='取消此預約';alert('連線失敗');});
+        if(d.success){ closeOverlay(); loadAll(); }
+        else{ btn.disabled=false; btn.textContent='取消此預約'; alert(d.error||'取消失敗'); }
+      }).catch(function(){ btn.disabled=false; btn.textContent='取消此預約'; alert('連線失敗'); });
     };
   }
 }
 
-function showDayModal(dt,bks){
-  var wds=['週日','週一','週二','週三','週四','週五','週六'];
-  document.getElementById('ov-title').textContent=(dt.getMonth()+1)+'/'+dt.getDate()+'（'+wds[dt.getDay()]+'）全部預約';
+function showDayList(dt,bks){
+  document.getElementById('ov-title').textContent=(dt.getMonth()+1)+'/'+dt.getDate()+'（'+WD_FULL[dt.getDay()]+'）全部預約';
   var html='';
   bks.forEach(function(b){
     var s=new Date(b.start_time),e=new Date(b.end_time);
-    var lines=svcLinesArr(b.services);
-    var totalM=getMins(b.services);
     var isCx=b.status==='已取消';
-    html+='<div style="border:1px solid #eee;border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px;line-height:1.7'+(isCx?';opacity:.5':'')+'">'+
-      '<div style="display:flex;justify-content:space-between;margin-bottom:4px"><strong>'+b.customer_name+'</strong><span class="'+(isCx?'badge-cx':'badge-ok')+'">'+b.status+'</span></div>'+
+    var lines=getSvcLines(b.services);
+    html+='<div style="border:1px solid #eee;border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px;line-height:1.8'+(isCx?';opacity:.5':'')+'">'+
+      '<div style="display:flex;justify-content:space-between;margin-bottom:3px"><strong>'+b.customer_name+'</strong><span class="'+(isCx?'badge-cx':'badge-ok')+'">'+b.status+'</span></div>'+
       b.customer_phone+'　'+b.vehicle_model+(b.vehicle_gen?'（'+b.vehicle_gen+'）':'')+'<br>'+
-      '⏰ '+p2(s.getHours())+':'+p2(s.getMinutes())+' 至 '+p2(e.getHours())+':'+p2(e.getMinutes())+'<br>'+
-      '服務：'+lines.join('<br>　　　')+'<br>工時：共約 '+fmtMins(totalM)+
-      (isCx?'':'<br><button onclick="showOverlay('+JSON.stringify(b).replace(/"/g,"'")+');this.closest(\'div\').remove()" style="margin-top:6px;font-size:11px;border:1px solid #ddd;border-radius:6px;padding:3px 8px;background:#fff;cursor:pointer">查看詳情</button>')+
-      '</div>';
+      p2(s.getHours())+':'+p2(s.getMinutes())+' 至 '+p2(e.getHours())+':'+p2(e.getMinutes())+'<br>'+
+      '服務：'+lines.join('<br>　　　')+'</div>';
   });
   document.getElementById('ov-body').innerHTML=html;
   document.getElementById('overlay').classList.add('show');
 }
 
-function closeOverlay(){document.getElementById('overlay').classList.remove('show');}
+function closeOverlay(){ document.getElementById('overlay').classList.remove('show'); }
 document.getElementById('ov-close').onclick=closeOverlay;
-document.getElementById('overlay').onclick=function(e){if(e.target===this)closeOverlay();};
+document.getElementById('overlay').onclick=function(e){ if(e.target===this)closeOverlay(); };
 
-/* ── 儀表板統計 ── */
+// ─── 儀表板統計 ──────────────────────────────────────────
 document.querySelectorAll('.dash-tab').forEach(function(tab){
   tab.onclick=function(){
     document.querySelectorAll('.dash-tab').forEach(function(t){t.classList.remove('on');});
-    tab.classList.add('on');G.statRange=tab.dataset.r;renderStats();
+    tab.classList.add('on'); G.range=tab.dataset.r; renderStats();
   };
 });
 
 function getRange(r){
-  var now=new Date();now.setHours(0,0,0,0);
-  if(r==='today')return{s:fmtISO(now),e:fmtISO(now)};
+  var now=new Date(); now.setHours(0,0,0,0);
+  if(r==='today') return{s:fmtISO(now),e:fmtISO(now)};
   if(r==='week'){
-    var mon=new Date(now);var d=mon.getDay();mon.setDate(mon.getDate()-(d===0?6:d-1));
-    var sun=new Date(mon);sun.setDate(mon.getDate()+6);
+    var mon=new Date(now); mon.setDate(now.getDate()-(now.getDay()===0?6:now.getDay()-1));
+    var sun=new Date(mon); sun.setDate(mon.getDate()+6);
     return{s:fmtISO(mon),e:fmtISO(sun)};
   }
-  return{s:fmtISO(new Date(now.getFullYear(),now.getMonth(),1)),e:fmtISO(new Date(now.getFullYear(),now.getMonth()+1,0))};
+  return{s:fmtISO(new Date(now.getFullYear(),now.getMonth(),1)),
+         e:fmtISO(new Date(now.getFullYear(),now.getMonth()+1,0))};
 }
 
 function renderStats(){
-  var rng=getRange(G.statRange);
+  var rng=getRange(G.range);
   var bks=G.all.filter(function(b){
     var ds=String(b.start_time).substring(0,10);
     return ds>=rng.s&&ds<=rng.e&&b.status==='已確認';
   });
   document.getElementById('st-count').textContent=bks.length;
-  var totalM=bks.reduce(function(sum,b){return sum+getMins(b.services);},0);
+  var totalM=bks.reduce(function(s,b){return s+getMins(b.services);},0);
   document.getElementById('st-hours').textContent=Math.round(totalM/60*10)/10;
 
-  var svcCnt={};
+  var cnt={};
   bks.forEach(function(b){
     String(b.services).split('、').forEach(function(s){
-      s=s.trim();var cat=s.indexOf('-')>-1?s.split('-')[0]:s;
-      svcCnt[cat]=(svcCnt[cat]||0)+1;
+      s=s.trim(); var cat=s.indexOf('-')>-1?s.split('-')[0]:s;
+      cnt[cat]=(cnt[cat]||0)+1;
     });
   });
-  var total=Object.values(svcCnt).reduce(function(a,b){return a+b;},0);
+  var total=Object.values(cnt).reduce(function(a,b){return a+b;},0);
   var barsEl=document.getElementById('dash-bars');
   barsEl.innerHTML='';
   if(!total){barsEl.innerHTML='<span style="font-size:12px;color:#aaa">此區間無資料</span>';return;}
-  Object.keys(svcCnt).sort(function(a,b){return svcCnt[b]-svcCnt[a];}).slice(0,4).forEach(function(name,i){
-    var pct=Math.round(svcCnt[name]/total*100);
-    var item=document.createElement('div');item.className='db-item';
+  Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];}).slice(0,4).forEach(function(name,i){
+    var pct=Math.round(cnt[name]/total*100);
+    var item=document.createElement('div'); item.className='db-item';
     item.innerHTML='<div class="db-dot '+BAR_COLORS[i]+'"></div>'+
-      '<span style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+name+'</span>'+
+      '<span style="max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+name+'</span>'+
       '<strong>'+pct+'%</strong>';
     barsEl.appendChild(item);
   });
 }
 
-/* ── 搜尋 ── */
+// ─── 搜尋 ────────────────────────────────────────────────
 document.getElementById('search-toggle').onclick=function(){
   var bar=document.getElementById('search-bar');
-  bar.style.display=bar.style.display==='none'?'block':'none';
-  if(bar.style.display==='block')document.getElementById('search-ph').focus();
+  bar.style.display=bar.style.display==='block'?'none':'block';
+  if(bar.style.display==='block') document.getElementById('search-ph').focus();
 };
 document.getElementById('search-close').onclick=function(){
   document.getElementById('search-bar').style.display='none';
-  document.getElementById('search-result-page').style.display='none';
+  document.getElementById('search-page').style.display='none';
   document.getElementById('cal-wrap').style.display='block';
 };
 
 function doSearch(){
   var phone=document.getElementById('search-ph').value.trim();
-  if(!phone)return;
-  var bks=G.all.filter(function(b){return String(b.customer_phone)===phone;});
-  bks.sort(function(a,b){return new Date(b.start_time)-new Date(a.start_time);});
+  if(!phone) return;
+  var bks=G.all.filter(function(b){ return String(b.customer_phone)===phone; });
+  bks.sort(function(a,b){ return new Date(b.start_time)-new Date(a.start_time); });
   document.getElementById('cal-wrap').style.display='none';
-  var rp=document.getElementById('search-result-page');
-  rp.style.display='block';
-  document.getElementById('search-result-title').textContent='搜尋結果：'+phone+'（共 '+bks.length+' 筆）';
-  var list=document.getElementById('search-result-list');
-  list.innerHTML='';
-  if(!bks.length){list.innerHTML='<div style="font-size:13px;color:#aaa;padding:20px 0">查無此號碼的預約記錄</div>';return;}
+  var sp=document.getElementById('search-page'); sp.style.display='block';
+  document.getElementById('sp-title').textContent='搜尋結果：'+phone+'（共 '+bks.length+' 筆）';
+  var list=document.getElementById('sp-list'); list.innerHTML='';
+  if(!bks.length){ list.innerHTML='<div class="empty">查無此號碼的預約記錄</div>'; return; }
   bks.forEach(function(b){
     var s=new Date(b.start_time),e=new Date(b.end_time);
     var isCx=b.status==='已取消';
-    var lines=svcLinesArr(b.services);
+    var lines=getSvcLines(b.services);
     var totalM=getMins(b.services);
     var card=document.createElement('div');
-    card.style.cssText='border:1px solid #e0e0e0;border-radius:10px;padding:14px;margin-bottom:10px;background:#fff;font-size:13px;line-height:1.8'+(isCx?';opacity:.6':'');
+    card.className='sr-card'+(isCx?' cx':'');
     card.innerHTML=
-      '<div style="display:flex;justify-content:space-between;margin-bottom:6px"><strong style="font-size:14px">'+b.customer_name+'</strong><span class="'+(isCx?'badge-cx':'badge-ok')+'">'+b.status+'</span></div>'+
+      '<div class="sr-top"><span class="sr-name">'+b.customer_name+'</span><span class="'+(isCx?'badge-cx':'badge-ok')+'">'+b.status+'</span></div>'+
       '<div style="color:#888;margin-bottom:6px">'+b.customer_phone+'　'+b.vehicle_model+(b.vehicle_gen?'（'+b.vehicle_gen+'）':'')+'</div>'+
       '<div>服務：'+lines.join('<br>　　　')+'</div>'+
       '<div>工時：共約 '+fmtMins(totalM)+'</div>'+
-      '<div style="color:#555">時間：'+fmtDT(s)+' 至 '+p2(e.getHours())+':'+p2(e.getMinutes())+'</div>'+
+      '<div style="color:#555">時間：'+fmtDTFull(s)+' 至 '+p2(e.getHours())+':'+p2(e.getMinutes())+'</div>'+
       '<div style="font-size:11px;color:#aaa">編號：'+b.id+'</div>'+
-      (isCx?'':'<button onclick="showOverlay(this._b)" style="margin-top:10px;width:100%;padding:8px;font-size:12px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit">查看 / 取消</button>');
+      (isCx?'':'<button class="sr-view">查看 / 取消</button>');
     if(!isCx){
-      var viewBtn=card.querySelector('button');
-      if(viewBtn){viewBtn._b=b;viewBtn.onclick=function(){showOverlay(this._b);};}
+      var btn=card.querySelector('.sr-view');
+      btn._b=b; btn.onclick=function(){ showOverlay(this._b); };
     }
     list.appendChild(card);
   });
 }
 document.getElementById('search-btn').onclick=doSearch;
-document.getElementById('search-ph').onkeydown=function(e){if(e.key==='Enter')doSearch();};
+document.getElementById('search-ph').onkeydown=function(e){ if(e.key==='Enter')doSearch(); };
 </script>
 </body>
 </html>
