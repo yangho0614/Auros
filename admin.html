@@ -5,362 +5,438 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AUROS TESLA 後台管理</title>
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: -apple-system, "Helvetica Neue", "PingFang TC", Arial, sans-serif;
-    background: #f5f5f5;
-    color: #1a1a1a;
-    padding: 24px 16px;
-  }
-  .container { max-width: 720px; margin: 0 auto; }
-  .header { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 24px; }
-  .header h1 { font-size: 16px; margin: 0; font-weight: 600; }
-  .header p { font-size: 12px; margin: 0; color: #777; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color:#1a1a1a;min-height:100vh}
 
-  .card {
-    background: white; border: 1px solid #e5e5e5; border-radius: 12px;
-    padding: 20px; margin-bottom: 16px;
-  }
-  .label { font-size: 13px; color: #777; margin: 0 0 8px; }
-  input[type="password"], input[type="text"], input[type="tel"] {
-    width: 100%; padding: 10px 12px; font-size: 14px;
-    border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px;
-  }
-  button.opt {
-    padding: 10px 14px; font-size: 14px; border-radius: 8px;
-    border: 1px solid #ddd; background: white; cursor: pointer;
-  }
-  button.opt:hover { border-color: #999; }
-  button.opt.selected { border-color: #1a1a1a; background: #1a1a1a; color: white; }
-  .primary-btn {
-    width: 100%; padding: 12px; font-size: 15px; font-weight: 600;
-    border-radius: 8px; border: none; background: #1a1a1a; color: white;
-    cursor: pointer;
-  }
-  .primary-btn:disabled { background: #ccc; cursor: not-allowed; }
+/* ── 登入畫面 ── */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.login-card{background:#fff;border:1px solid #e0e0e0;border-radius:16px;padding:32px;width:100%;max-width:360px}
+.login-card .logo{width:44px;height:44px;background:#1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:500;margin:0 auto 12px}
+.login-card h1{text-align:center;font-size:16px;font-weight:500;margin-bottom:4px}
+.login-card p{text-align:center;font-size:12px;color:#888;margin-bottom:24px}
+.login-card input{width:100%;padding:10px 12px;font-size:14px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;font-family:inherit}
+.login-card button{width:100%;padding:12px;font-size:14px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:inherit}
+.err{font-size:12px;color:#b91c1c;text-align:center;margin-top:8px}
 
-  .tab-row { display: flex; gap: 8px; margin-bottom: 16px; }
-  .tab-row button { flex: 1; }
+/* ── 主介面 ── */
+#main-screen{display:none}
+.topbar{background:#fff;border-bottom:1px solid #e0e0e0;padding:12px 20px;display:flex;align-items:center;gap:12px}
+.topbar .logo-sm{width:32px;height:32px;background:#1a1a1a;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:500;flex-shrink:0}
+.topbar h1{font-size:14px;font-weight:500;flex:1}
+.topbar .logout{font-size:12px;color:#888;cursor:pointer;border:1px solid #ddd;border-radius:6px;padding:4px 10px;background:#fff}
+.topbar .logout:hover{border-color:#999}
 
-  .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
-  .stat-box { background: #f7f7f7; border-radius: 8px; padding: 14px; text-align: center; }
-  .stat-box .num { font-size: 24px; font-weight: 600; }
-  .stat-box .lbl { font-size: 12px; color: #777; margin-top: 4px; }
+.layout{display:grid;grid-template-columns:1fr 340px;gap:0;min-height:calc(100vh - 53px)}
 
-  .service-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; }
-  .service-bar-row .name { width: 110px; flex-shrink: 0; }
-  .service-bar-track { flex: 1; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
-  .service-bar-fill { height: 100%; background: #1a1a1a; }
-  .service-bar-row .pct { width: 36px; text-align: right; color: #777; flex-shrink: 0; }
+/* ── 左側月曆 ── */
+.cal-panel{padding:20px;border-right:1px solid #e0e0e0;background:#fff}
+.cal-nav{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.cal-nav .m-lbl{flex:1;font-size:16px;font-weight:500}
+.cal-nav button{border:1px solid #ddd;border-radius:7px;background:#fff;padding:6px 12px;cursor:pointer;font-size:13px}
+.cal-nav button:hover{border-color:#999}
+.cal-wd{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:12px;color:#aaa;margin-bottom:6px;padding:0 2px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cd{border-radius:8px;padding:4px 2px;min-height:72px;cursor:pointer;border:1px solid transparent;position:relative;background:#fafafa}
+.cd:hover:not(.di):not(.em){background:#f0f0f0}
+.cd.today{border-color:#1a1a1a}
+.cd.sel{background:#1a1a1a;color:#fff}
+.cd.di{opacity:.4;cursor:not-allowed;background:transparent}
+.cd.em{background:transparent;border:none;cursor:default}
+.cd.wk .dn{color:#c0392b}
+.cd.sel .dn{color:#fff}
+.cd.sel .dot{background:#fff}
+.dn{font-size:12px;font-weight:500;padding:4px 6px;display:block}
+.dots{padding:2px 4px;display:flex;flex-wrap:wrap;gap:3px}
+.dot{width:6px;height:6px;border-radius:50%;background:#1a1a1a;flex-shrink:0}
+.dot.cancelled{background:#ccc}
+.booking-count{font-size:10px;color:#555;padding:0 4px;margin-top:2px}
+.cd.sel .booking-count{color:#ccc}
 
-  .booking-row {
-    border: 1px solid #eee; border-radius: 8px; padding: 12px; margin-bottom: 8px;
-    font-size: 13px; line-height: 1.6;
-  }
-  .booking-row.cancelled { opacity: 0.5; }
-  .booking-row .top-line { display: flex; justify-content: space-between; align-items: baseline; }
-  .booking-row .id { color: #999; font-size: 11px; }
-  .status-badge {
-    display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px;
-  }
-  .status-badge.confirmed { background: #e6f7ed; color: #0a7a3d; }
-  .status-badge.cancelled { background: #f0f0f0; color: #999; }
-  .cancel-row-btn {
-    margin-top: 8px; padding: 6px 12px; font-size: 12px;
-    color: #b91c1c; border-color: #f0c0c0;
-  }
-  .note { font-size: 12px; color: #999; }
-  .msg { text-align: center; font-size: 13px; margin-top: 12px; padding: 10px; border-radius: 8px; }
-  .msg.success { background: #e6f7ed; color: #0a7a3d; }
-  .msg.error { background: #fde8e8; color: #b91c1c; }
+/* ── 右側面板 ── */
+.right-panel{background:#f5f5f5;padding:20px;overflow-y:auto}
+
+/* 儀表板統計 */
+.stat-tabs{display:flex;gap:6px;margin-bottom:14px}
+.stat-tab{padding:6px 14px;border-radius:20px;border:1px solid #ddd;background:#fff;font-size:12px;cursor:pointer;font-family:inherit}
+.stat-tab.on{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.stat-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:14px}
+.stat-card .sv{font-size:24px;font-weight:500;color:#1a1a1a}
+.stat-card .sl{font-size:11px;color:#888;margin-top:4px}
+.svc-bars{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:14px;margin-bottom:14px}
+.svc-bars h3{font-size:12px;color:#888;margin-bottom:10px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px}
+.bar-name{width:110px;flex-shrink:0;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:7px;background:#f0f0f0;border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;background:#1a1a1a;border-radius:4px}
+.bar-pct{width:32px;text-align:right;color:#aaa;flex-shrink:0}
+
+/* 預約列表 */
+.day-panel{background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:14px}
+.day-panel h3{font-size:13px;font-weight:500;margin-bottom:12px;color:#1a1a1a}
+.bk-item{border:1px solid #eee;border-radius:8px;padding:11px;margin-bottom:8px;font-size:12px;line-height:1.7}
+.bk-item.cancelled{opacity:.5}
+.bk-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.bk-name{font-weight:500;font-size:13px}
+.badge{font-size:11px;padding:2px 8px;border-radius:10px}
+.badge.ok{background:#e6f7ed;color:#0a7a3d}
+.badge.cx{background:#f0f0f0;color:#999}
+.bk-time{font-size:12px;color:#555;margin-bottom:3px}
+.cancel-row-btn{margin-top:8px;width:100%;padding:6px;font-size:12px;color:#b91c1c;border:1px solid #f0c0c0;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit}
+.cancel-row-btn:hover{background:#fff5f5}
+.empty{font-size:13px;color:#aaa;text-align:center;padding:20px 0}
+
+/* 搜尋 */
+.search-wrap{display:flex;gap:8px;margin-bottom:14px}
+.search-wrap input{flex:1;padding:8px 12px;font-size:13px;border:1px solid #ddd;border-radius:8px;font-family:inherit}
+.search-wrap button{padding:8px 14px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit}
+.search-wrap button:hover{border-color:#999}
+
+.msg-ok{background:#e6f7ed;color:#0a7a3d;padding:10px;border-radius:8px;font-size:12px;text-align:center;margin-top:8px}
+.msg-err{background:#fde8e8;color:#b91c1c;padding:10px;border-radius:8px;font-size:12px;text-align:center;margin-top:8px}
 </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="header">
+<!-- 登入畫面 -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="logo">A</div>
+    <h1>AUROS TESLA</h1>
+    <p>後台管理系統</p>
+    <input type="password" id="pw-input" placeholder="請輸入管理密碼">
+    <button id="login-btn">登入</button>
+    <div class="err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- 主介面 -->
+<div id="main-screen">
+  <div class="topbar">
+    <div class="logo-sm">A</div>
     <h1>AUROS TESLA 後台管理</h1>
-    <p>預約查詢與統計</p>
+    <button class="logout" id="logout-btn">登出</button>
   </div>
+  <div class="layout">
 
-  <div class="card" id="login-card">
-    <p class="label">請輸入管理密碼</p>
-    <input type="password" id="password-input" placeholder="密碼">
-    <button class="primary-btn" id="login-btn">登入</button>
-    <div id="login-msg"></div>
-  </div>
-
-  <div id="admin-panel" style="display:none;">
-
-    <div class="card">
-      <div class="tab-row">
-        <button class="opt selected" id="tab-today">今日</button>
-        <button class="opt" id="tab-week">本週</button>
-        <button class="opt" id="tab-search">搜尋</button>
+    <!-- 左側月曆 -->
+    <div class="cal-panel">
+      <div class="cal-nav">
+        <span class="m-lbl" id="m-lbl"></span>
+        <button id="prev-m">←</button>
+        <button id="next-m">→</button>
       </div>
-
-      <div id="search-panel" style="display:none; margin-bottom:16px;">
-        <p class="label">客戶手機號碼</p>
-        <input type="tel" id="search-phone" placeholder="請輸入手機號碼">
-        <button class="opt" id="search-btn" style="width:100%;">查詢</button>
-      </div>
-
-      <p class="note" id="loading-note" style="display:none;">載入中...</p>
+      <div class="cal-wd" id="cal-wd"></div>
+      <div class="cal-grid" id="cal-grid"></div>
     </div>
 
-    <div class="card" id="stats-card" style="display:none;">
-      <p class="label" style="font-size:14px; font-weight:600; color:#1a1a1a;">業績統計</p>
-      <div class="stat-grid">
-        <div class="stat-box">
-          <div class="num" id="stat-count">0</div>
-          <div class="lbl">預約數（已確認）</div>
-        </div>
-        <div class="stat-box">
-          <div class="num" id="stat-hours">0</div>
-          <div class="lbl">總工時（小時）</div>
-        </div>
+    <!-- 右側面板 -->
+    <div class="right-panel">
+
+      <!-- 統計切換 -->
+      <div class="stat-tabs">
+        <button class="stat-tab on" data-r="today">今日</button>
+        <button class="stat-tab" data-r="week">本週</button>
+        <button class="stat-tab" data-r="month">本月</button>
       </div>
-      <p class="label">服務項目佔比</p>
-      <div id="service-breakdown"></div>
-    </div>
+      <div class="stat-cards">
+        <div class="stat-card"><div class="sv" id="st-count">—</div><div class="sl">已確認預約數</div></div>
+        <div class="stat-card"><div class="sv" id="st-hours">—</div><div class="sl">總工時（小時）</div></div>
+      </div>
+      <div class="svc-bars">
+        <h3>服務項目佔比</h3>
+        <div id="svc-bars"></div>
+      </div>
 
-    <div class="card">
-      <p class="label" id="list-title" style="font-size:14px; font-weight:600; color:#1a1a1a;">預約列表</p>
-      <div id="booking-list"></div>
-      <p class="note" id="empty-note" style="display:none;">這個範圍內沒有預約記錄</p>
-    </div>
+      <!-- 搜尋 -->
+      <div class="search-wrap">
+        <input type="tel" id="search-phone" placeholder="輸入手機號碼搜尋客戶">
+        <button id="search-btn">搜尋</button>
+      </div>
 
+      <!-- 當日預約列表 -->
+      <div class="day-panel">
+        <h3 id="day-title">點擊月曆日期查看預約</h3>
+        <div id="day-list"></div>
+      </div>
+
+    </div>
   </div>
 </div>
 
 <script>
-// ⚠️ 請把這裡換成你自己的 Google Apps Script 部署網址（結尾是 /exec），跟前台用同一個網址
-var API_URL = 'https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
-
-// ⚠️ 請把這裡換成你自己想要的後台密碼
+var API = 'https://script.google.com/macros/s/AKfycbx8ic_5WXffnJXALsVYraPWuQnkz8_eLaHnDKg9fhje3_nZQCq6OXKNO-ljPDzt7c61DA/exec';
 var ADMIN_PASSWORD = 'auros2026';
+var WD = ['日','一','二','三','四','五','六'];
+var CAT = {
+  '電系改裝':{'電吸門':60,'幻彩把手':60,'數位儀表板':60},
+  '避震器/煞車系統改裝':{'避震器':60,'煞車系統':60},
+  '外觀套件':{'外觀套件':120},
+  '基礎保養/檢測':{'基礎保養/檢測':60}
+};
 
-var SERVICES_LIST = ['電裝升級', '避震/車身升級', '外觀改裝', '基礎保養/檢測'];
-var currentView = 'today';
+var G = { vy:0, vm:0, allBookings:[], selDate:null, statRange:'today' };
 
-document.getElementById('login-btn').addEventListener('click', function() {
-  var input = document.getElementById('password-input').value;
-  var msg = document.getElementById('login-msg');
-  if (input === ADMIN_PASSWORD) {
-    document.getElementById('login-card').style.display = 'none';
-    document.getElementById('admin-panel').style.display = 'block';
-    loadView('today');
-  } else {
-    msg.innerHTML = '<div class="msg error">密碼錯誤</div>';
-  }
-});
-
-document.getElementById('password-input').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') document.getElementById('login-btn').click();
-});
-
-function setTab(tab) {
-  ['today','week','search'].forEach(function(t) {
-    document.getElementById('tab-' + t).classList.toggle('selected', t === tab);
+function p2(n){return String(n).padStart(2,'0');}
+function fmtISO(d){return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
+function fmtLabel(d){var wds=['週日','週一','週二','週三','週四','週五','週六'];return(d.getMonth()+1)+'/'+d.getDate()+'（'+wds[d.getDay()]+'）';}
+function sameDay(a,b){return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();}
+function isWk(d){var w=d.getDay();return w===0||w===6;}
+function getMins(svcStr){
+  var total=0;
+  String(svcStr).split('、').forEach(function(label){
+    label=label.trim();
+    var di=label.indexOf('-');
+    var mins=0;
+    if(di>-1){var c=label.substring(0,di),s=label.substring(di+1);if(CAT[c]&&CAT[c][s])mins=CAT[c][s];}
+    else{if(CAT[label]&&CAT[label][label])mins=CAT[label][label];}
+    total+=mins;
   });
-  document.getElementById('search-panel').style.display = tab === 'search' ? 'block' : 'none';
-  currentView = tab;
+  return total;
+}
+function fmtMins(m){var h=Math.floor(m/60),r=m%60;return h&&r?h+'小時'+r+'分':h?h+'小時':r+'分';}
+function svcLines(svcStr){
+  return String(svcStr).split('、').map(function(label){
+    label=label.trim();
+    var di=label.indexOf('-'),mins=0;
+    if(di>-1){var c=label.substring(0,di),s=label.substring(di+1);if(CAT[c]&&CAT[c][s])mins=CAT[c][s];}
+    else{if(CAT[label]&&CAT[label][label])mins=CAT[label][label];}
+    return label+'（約'+fmtMins(mins)+'）';
+  });
 }
 
-document.getElementById('tab-today').addEventListener('click', function() {
-  setTab('today');
-  loadView('today');
-});
-document.getElementById('tab-week').addEventListener('click', function() {
-  setTab('week');
-  loadView('week');
-});
-document.getElementById('tab-search').addEventListener('click', function() {
-  setTab('search');
-  document.getElementById('stats-card').style.display = 'none';
-  document.getElementById('booking-list').innerHTML = '';
-  document.getElementById('empty-note').style.display = 'none';
-  document.getElementById('list-title').textContent = '請輸入手機號碼查詢';
-});
-
-document.getElementById('search-btn').addEventListener('click', function() {
-  var phone = document.getElementById('search-phone').value.trim();
-  if (!phone) return;
-  fetchAndRender(API_URL + '?action=lookup_admin&phone=' + encodeURIComponent(phone), '搜尋結果：' + phone);
-});
-
-function formatDateISO(d) {
-  var y = d.getFullYear(), m = (d.getMonth()+1+'').padStart(2,'0'), day = (d.getDate()+'').padStart(2,'0');
-  return y + '-' + m + '-' + day;
-}
-
-function loadView(view) {
-  var today = new Date();
-  if (view === 'today') {
-    var dateStr = formatDateISO(today);
-    fetchAndRender(API_URL + '?action=bookings&date=' + dateStr, '今日預約（' + dateStr + '）', true);
-  } else if (view === 'week') {
-    var dayOfWeek = today.getDay();
-    var mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    var monday = new Date(today);
-    monday.setDate(today.getDate() + mondayOffset);
-    var sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-    var startStr = formatDateISO(monday);
-    var endStr = formatDateISO(sunday);
-    fetchAndRender(API_URL + '?action=bookings&range_start=' + startStr + '&range_end=' + endStr,
-      '本週預約（' + startStr + ' 至 ' + endStr + '）', true);
+/* ── 登入 ── */
+document.getElementById('login-btn').onclick = function(){
+  if(document.getElementById('pw-input').value === ADMIN_PASSWORD){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('main-screen').style.display='block';
+    var now=new Date();G.vy=now.getFullYear();G.vm=now.getMonth();
+    loadAll();
+  } else {
+    document.getElementById('login-err').textContent='密碼錯誤，請重試';
   }
-}
+};
+document.getElementById('pw-input').onkeydown=function(e){if(e.key==='Enter')document.getElementById('login-btn').click();};
+document.getElementById('logout-btn').onclick=function(){
+  document.getElementById('main-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('pw-input').value='';
+};
 
-function fetchAndRender(url, title, showStats) {
-  var loadingNote = document.getElementById('loading-note');
-  var listEl = document.getElementById('booking-list');
-  var emptyNote = document.getElementById('empty-note');
-  var statsCard = document.getElementById('stats-card');
-
-  document.getElementById('list-title').textContent = title;
-  loadingNote.style.display = 'block';
-  listEl.innerHTML = '';
-  emptyNote.style.display = 'none';
-  statsCard.style.display = 'none';
-
-  fetch(url)
-    .then(function(r){ return r.json(); })
-    .then(function(data){
-      loadingNote.style.display = 'none';
-      if (!data.success) {
-        listEl.innerHTML = '<div class="msg error">' + (data.error || '查詢失敗') + '</div>';
-        return;
-      }
-
-      var bookings = data.bookings || [];
-
-      if (showStats) {
-        renderStats(bookings);
-      }
-
-      if (bookings.length === 0) {
-        emptyNote.style.display = 'block';
-        return;
-      }
-
-      renderBookingList(bookings);
+/* ── 載入全部預約 ── */
+function loadAll(){
+  fetch(API+'?action=bookings')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d.success){G.allBookings=d.bookings||[];}
+      else{G.allBookings=[];}
+      renderCal();
+      renderStats();
+      if(G.selDate)renderDayList(G.selDate);
     })
-    .catch(function(err){
-      loadingNote.style.display = 'none';
-      listEl.innerHTML = '<div class="msg error">連線失敗，請檢查網路後重試</div>';
-      console.error(err);
-    });
+    .catch(function(){G.allBookings=[];renderCal();renderStats();});
 }
 
-function renderStats(bookings) {
-  var confirmed = bookings.filter(function(b){ return b.status === '已確認'; });
-  document.getElementById('stat-count').textContent = confirmed.length;
+/* ── 月曆 ── */
+function renderCal(){
+  document.getElementById('m-lbl').textContent=G.vy+'年'+(G.vm+1)+'月';
+  var wd=document.getElementById('cal-wd');
+  wd.innerHTML='';
+  WD.forEach(function(w){var d=document.createElement('div');d.textContent=w;d.style.textAlign='center';d.style.fontSize='12px';d.style.color='#aaa';d.style.padding='4px 0';wd.appendChild(d);});
 
-  var totalMins = confirmed.reduce(function(sum, b){ return sum + (parseInt(b.total_duration_minutes,10) || 0); }, 0);
-  document.getElementById('stat-hours').textContent = Math.round(totalMins / 60 * 10) / 10;
+  var grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+  var first=new Date(G.vy,G.vm,1);
+  var days=new Date(G.vy,G.vm+1,0).getDate();
+  var today=new Date();today.setHours(0,0,0,0);
 
-  var serviceCounts = {};
-  SERVICES_LIST.forEach(function(s){ serviceCounts[s] = 0; });
-  var totalServiceMentions = 0;
-
-  confirmed.forEach(function(b) {
-    var names = String(b.services).split('、');
-    names.forEach(function(n) {
-      n = n.trim();
-      if (n) {
-        if (!serviceCounts.hasOwnProperty(n)) serviceCounts[n] = 0;
-        serviceCounts[n]++;
-        totalServiceMentions++;
-      }
-    });
-  });
-
-  var breakdown = document.getElementById('service-breakdown');
-  breakdown.innerHTML = '';
-
-  if (totalServiceMentions === 0) {
-    breakdown.innerHTML = '<p class="note">尚無資料</p>';
-  } else {
-    Object.keys(serviceCounts).sort(function(a,b){ return serviceCounts[b]-serviceCounts[a]; }).forEach(function(name) {
-      var count = serviceCounts[name];
-      var pct = Math.round(count / totalServiceMentions * 100);
-      var row = document.createElement('div');
-      row.className = 'service-bar-row';
-      row.innerHTML = '<div class="name">' + name + '</div>' +
-        '<div class="service-bar-track"><div class="service-bar-fill" style="width:' + pct + '%;"></div></div>' +
-        '<div class="pct">' + pct + '%</div>';
-      breakdown.appendChild(row);
-    });
+  for(var i=0;i<first.getDay();i++){
+    var e=document.createElement('div');e.className='cd em';grid.appendChild(e);
   }
 
-  document.getElementById('stats-card').style.display = 'block';
+  for(var d=1;d<=days;d++){
+    (function(day){
+      var dt=new Date(G.vy,G.vm,day);
+      var iso=fmtISO(dt);
+      var dayBks=G.allBookings.filter(function(b){return String(b.start_time).indexOf(iso)===0;});
+      var confirmed=dayBks.filter(function(b){return b.status==='已確認';});
+      var cancelled=dayBks.filter(function(b){return b.status==='已取消';});
+
+      var cell=document.createElement('div');
+      cell.className='cd';
+      if(isWk(dt))cell.classList.add('wk');
+      if(sameDay(dt,today))cell.classList.add('today');
+      if(G.selDate&&sameDay(dt,G.selDate))cell.classList.add('sel');
+
+      var dn=document.createElement('span');dn.className='dn';dn.textContent=day;cell.appendChild(dn);
+
+      if(dayBks.length>0){
+        var dotsEl=document.createElement('div');dotsEl.className='dots';
+        confirmed.forEach(function(){var dot=document.createElement('div');dot.className='dot';dotsEl.appendChild(dot);});
+        cancelled.forEach(function(){var dot=document.createElement('div');dot.className='dot cancelled';dotsEl.appendChild(dot);});
+        cell.appendChild(dotsEl);
+        if(dayBks.length>0){
+          var cnt=document.createElement('div');cnt.className='booking-count';
+          cnt.textContent=confirmed.length+'筆預約'+(cancelled.length?'・'+cancelled.length+'筆取消':'');
+          cell.appendChild(cnt);
+        }
+      }
+
+      cell.onclick=function(){
+        G.selDate=dt;
+        renderCal();
+        renderDayList(dt);
+      };
+      grid.appendChild(cell);
+    })(d);
+  }
 }
 
-function formatDisplay(b) {
-  var start = new Date(b.start_time);
-  var end = new Date(b.end_time);
-  var weekdays = ['週日','週一','週二','週三','週四','週五','週六'];
-  var dateLabel = (start.getMonth()+1) + '/' + start.getDate() + ' (' + weekdays[start.getDay()] + ')';
-  var startLabel = (start.getHours()+'').padStart(2,'0') + ':' + (start.getMinutes()+'').padStart(2,'0');
-  var endLabel = (end.getHours()+'').padStart(2,'0') + ':' + (end.getMinutes()+'').padStart(2,'0');
-  return dateLabel + ' ' + startLabel + ' 至 ' + endLabel;
-}
+document.getElementById('prev-m').onclick=function(){G.vm--;if(G.vm<0){G.vm=11;G.vy--;}renderCal();};
+document.getElementById('next-m').onclick=function(){G.vm++;if(G.vm>11){G.vm=0;G.vy++;}renderCal();};
 
-function renderBookingList(bookings) {
-  var listEl = document.getElementById('booking-list');
-  listEl.innerHTML = '';
-
-  bookings.forEach(function(b) {
-    var isCancelled = b.status !== '已確認';
-    var modelLabel = b.vehicle_model + (b.vehicle_gen ? '（' + b.vehicle_gen + '）' : '');
-    var row = document.createElement('div');
-    row.className = 'booking-row' + (isCancelled ? ' cancelled' : '');
-    row.innerHTML =
-      '<div class="top-line"><strong>' + b.customer_name + '</strong>' +
-      '<span class="status-badge ' + (isCancelled ? 'cancelled' : 'confirmed') + '">' + b.status + '</span></div>' +
-      '<div>電話：' + b.customer_phone + '</div>' +
-      '<div>車型：' + modelLabel + '</div>' +
-      '<div>服務：' + b.services + '</div>' +
-      '<div>時間：' + formatDisplay(b) + '</div>' +
-      '<div class="id">編號：' + b.id + '</div>' +
-      (isCancelled ? '' : '<button class="opt cancel-row-btn" data-id="' + b.id + '">取消此預約</button>');
-    listEl.appendChild(row);
+/* ── 當日預約列表 ── */
+function renderDayList(dt){
+  var iso=fmtISO(dt);
+  var bks=G.allBookings.filter(function(b){return String(b.start_time).indexOf(iso)===0;});
+  bks.sort(function(a,b){return new Date(a.start_time)-new Date(b.start_time);});
+  document.getElementById('day-title').textContent=fmtLabel(dt)+' 的預約（'+bks.length+' 筆）';
+  var list=document.getElementById('day-list');
+  list.innerHTML='';
+  if(!bks.length){list.innerHTML='<div class="empty">當日無預約記錄</div>';return;}
+  bks.forEach(function(b){
+    var s=new Date(b.start_time),e=new Date(b.end_time);
+    var sh=p2(s.getHours())+':'+p2(s.getMinutes());
+    var eh=p2(e.getHours())+':'+p2(e.getMinutes());
+    var isCx=b.status==='已取消';
+    var item=document.createElement('div');
+    item.className='bk-item'+(isCx?' cancelled':'');
+    var lines=svcLines(b.services);
+    var totalM=getMins(b.services);
+    item.innerHTML=
+      '<div class="bk-top"><span class="bk-name">'+b.customer_name+'</span><span class="badge '+(isCx?'cx':'ok')+'">'+b.status+'</span></div>'+
+      '<div style="font-size:12px;color:#888;margin-bottom:3px">'+b.customer_phone+'　'+b.vehicle_model+(b.vehicle_gen?'（'+b.vehicle_gen+'）':'')+'</div>'+
+      '<div class="bk-time">⏰ '+sh+' 至 '+eh+'</div>'+
+      '<div style="font-size:12px;color:#555;line-height:1.7">服務：'+lines.join('<br>　　　')+'<br>工時：共約 '+fmtMins(totalM)+'</div>'+
+      '<div style="font-size:11px;color:#aaa;margin-top:3px">編號：'+b.id+'</div>'+
+      (isCx?'':'<button class="cancel-row-btn" data-id="'+b.id+'">取消此預約</button>');
+    list.appendChild(item);
   });
 
-  document.querySelectorAll('.cancel-row-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var id = btn.getAttribute('data-id');
-      if (!window.confirm('確定要取消編號 ' + id + ' 的預約嗎？')) return;
-      btn.disabled = true;
-      btn.textContent = '取消中...';
+  list.querySelectorAll('.cancel-row-btn').forEach(function(btn){
+    btn.onclick=function(){
+      if(!confirm('確定要取消編號 '+btn.dataset.id+' 的預約嗎？'))return;
+      btn.disabled=true;btn.textContent='取消中…';
+      fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({action:'cancel',id:btn.dataset.id,admin:true})
+      }).then(function(r){return r.json();}).then(function(d){
+        if(d.success){loadAll();}
+        else{btn.disabled=false;btn.textContent='取消此預約';alert(d.error||'取消失敗');}
+      }).catch(function(){btn.disabled=false;btn.textContent='取消此預約';alert('連線失敗');});
+    };
+  });
+}
 
-      fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify({ action: 'cancel', id: id, admin: true })
-      })
-        .then(function(r){ return r.json(); })
-        .then(function(data){
-          if (data.success) {
-            loadView(currentView);
-          } else {
-            btn.disabled = false;
-            btn.textContent = '取消此預約';
-            alert(data.error || '取消失敗');
-          }
-        })
-        .catch(function(err){
-          btn.disabled = false;
-          btn.textContent = '取消此預約';
-          alert('連線失敗，請檢查網路後重試');
-          console.error(err);
-        });
+/* ── 統計 ── */
+document.querySelectorAll('.stat-tab').forEach(function(tab){
+  tab.onclick=function(){
+    document.querySelectorAll('.stat-tab').forEach(function(t){t.classList.remove('on');});
+    tab.classList.add('on');
+    G.statRange=tab.dataset.r;
+    renderStats();
+  };
+});
+
+function getDateRange(range){
+  var now=new Date();now.setHours(0,0,0,0);
+  if(range==='today'){
+    return {start:fmtISO(now),end:fmtISO(now)};
+  } else if(range==='week'){
+    var mon=new Date(now);var d=mon.getDay();mon.setDate(mon.getDate()-(d===0?6:d-1));
+    var sun=new Date(mon);sun.setDate(mon.getDate()+6);
+    return {start:fmtISO(mon),end:fmtISO(sun)};
+  } else {
+    var ms=new Date(now.getFullYear(),now.getMonth(),1);
+    var me=new Date(now.getFullYear(),now.getMonth()+1,0);
+    return {start:fmtISO(ms),end:fmtISO(me)};
+  }
+}
+
+function renderStats(){
+  var range=getDateRange(G.statRange);
+  var bks=G.allBookings.filter(function(b){
+    var ds=String(b.start_time).substring(0,10);
+    return ds>=range.start&&ds<=range.end&&b.status==='已確認';
+  });
+
+  document.getElementById('st-count').textContent=bks.length;
+  var totalMins=bks.reduce(function(sum,b){return sum+getMins(b.services);},0);
+  document.getElementById('st-hours').textContent=Math.round(totalMins/60*10)/10;
+
+  var svcCount={};
+  bks.forEach(function(b){
+    String(b.services).split('、').forEach(function(s){
+      s=s.trim();
+      var cat=s.indexOf('-')>-1?s.split('-')[0]:s;
+      svcCount[cat]=(svcCount[cat]||0)+1;
     });
   });
+  var total=Object.values(svcCount).reduce(function(a,b){return a+b;},0);
+  var barsEl=document.getElementById('svc-bars');
+  barsEl.innerHTML='';
+  if(!total){barsEl.innerHTML='<div style="font-size:12px;color:#aaa;text-align:center;padding:8px">此區間無資料</div>';return;}
+  Object.keys(svcCount).sort(function(a,b){return svcCount[b]-svcCount[a];}).forEach(function(name){
+    var pct=Math.round(svcCount[name]/total*100);
+    var row=document.createElement('div');row.className='bar-row';
+    row.innerHTML='<span class="bar-name" title="'+name+'">'+name+'</span>'+
+      '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div>'+
+      '<span class="bar-pct">'+pct+'%</span>';
+    barsEl.appendChild(row);
+  });
 }
+
+/* ── 搜尋 ── */
+document.getElementById('search-btn').onclick=function(){
+  var phone=document.getElementById('search-phone').value.trim();
+  if(!phone)return;
+  var list=document.getElementById('day-list');
+  document.getElementById('day-title').textContent='搜尋結果：'+phone;
+  var bks=G.allBookings.filter(function(b){return String(b.customer_phone)===phone;});
+  bks.sort(function(a,b){return new Date(b.start_time)-new Date(a.start_time);});
+  list.innerHTML='';
+  if(!bks.length){list.innerHTML='<div class="empty">查無此號碼的預約記錄</div>';return;}
+  bks.forEach(function(b){
+    var s=new Date(b.start_time),e=new Date(b.end_time);
+    var sh=p2(s.getHours())+':'+p2(s.getMinutes());
+    var eh=p2(e.getHours())+':'+p2(e.getMinutes());
+    var isCx=b.status==='已取消';
+    var lines=svcLines(b.services);
+    var totalM=getMins(b.services);
+    var item=document.createElement('div');
+    item.className='bk-item'+(isCx?' cancelled':'');
+    item.innerHTML=
+      '<div class="bk-top"><span class="bk-name">'+b.customer_name+'</span><span class="badge '+(isCx?'cx':'ok')+'">'+b.status+'</span></div>'+
+      '<div style="font-size:12px;color:#888;margin-bottom:3px">'+b.customer_phone+'　'+b.vehicle_model+(b.vehicle_gen?'（'+b.vehicle_gen+'）':'')+'</div>'+
+      '<div class="bk-time">📅 '+fmtLabel(s)+'　⏰ '+sh+' 至 '+eh+'</div>'+
+      '<div style="font-size:12px;color:#555;line-height:1.7">服務：'+lines.join('<br>　　　')+'<br>工時：共約 '+fmtMins(totalM)+'</div>'+
+      '<div style="font-size:11px;color:#aaa;margin-top:3px">編號：'+b.id+'</div>'+
+      (isCx?'':'<button class="cancel-row-btn" data-id="'+b.id+'">取消此預約</button>');
+    list.appendChild(item);
+  });
+  list.querySelectorAll('.cancel-row-btn').forEach(function(btn){
+    btn.onclick=function(){
+      if(!confirm('確定要取消編號 '+btn.dataset.id+' 的預約嗎？'))return;
+      btn.disabled=true;btn.textContent='取消中…';
+      fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({action:'cancel',id:btn.dataset.id,admin:true})
+      }).then(function(r){return r.json();}).then(function(d){
+        if(d.success){loadAll();}
+        else{btn.disabled=false;btn.textContent='取消此預約';alert(d.error||'取消失敗');}
+      }).catch(function(){btn.disabled=false;btn.textContent='取消此預約';alert('連線失敗');});
+    };
+  });
+};
+document.getElementById('search-phone').onkeydown=function(e){if(e.key==='Enter')document.getElementById('search-btn').click();};
 </script>
 </body>
 </html>
