@@ -22,7 +22,8 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 #main-screen{display:none;flex-direction:column;min-height:100vh}
 .topbar{background:#fff;border-bottom:1px solid #e0e0e0;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0}
 .topbar .logo-sm{width:30px;height:30px;background:#1a1a1a;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:500;flex-shrink:0}
-.topbar h1{font-size:14px;font-weight:500;flex:1}
+.topbar .site-title{font-size:14px;font-weight:500;flex:1;cursor:pointer;color:#1a1a1a;text-decoration:none}
+.topbar .site-title:hover{text-decoration:underline}
 .tb-btn{font-size:12px;color:#555;border:1px solid #ddd;border-radius:6px;padding:5px 12px;background:#fff;cursor:pointer;font-family:inherit;white-space:nowrap}
 .tb-btn:hover{border-color:#999}
 
@@ -53,7 +54,7 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .cal-nav .m-lbl{font-size:18px;font-weight:500;flex:1}
 .cal-nav button{border:1px solid #ddd;border-radius:7px;background:#fff;padding:6px 14px;cursor:pointer;font-size:13px;font-family:inherit}
 .cal-nav button:hover{border-color:#999}
-.cal-legend{display:flex;gap:16px;align-items:center;margin-bottom:10px;font-size:12px;color:#666}
+.cal-legend{display:flex;gap:16px;align-items:center;margin-bottom:10px;font-size:12px;color:#666;flex-wrap:wrap}
 .legend-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
 .cal-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .cal-table th{font-size:12px;color:#aaa;font-weight:400;padding:4px 6px 8px;border-bottom:1px solid #e0e0e0;text-align:left}
@@ -66,15 +67,12 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .cal-table td.holiday-cell:not(.blocked-cell){background:#fff0f0}
 .cal-table td.wkend-cell:not(.blocked-cell){background:#fff0f0}
 .cal-table td.blocked-cell{background:repeating-linear-gradient(-45deg,#f5f5f5,#f5f5f5 4px,#ebebeb 4px,#ebebeb 8px);cursor:pointer}
-.cal-table td.blocked-cell:hover{filter:brightness(.97)}
 .day-num{font-size:12px;font-weight:500;padding:5px 7px;display:inline-block;color:#333}
 .other-m .day-num{color:#ccc}
-.wk-num,.hol-num{color:#c0392b}
+.wk-num{color:#c0392b}
 .today-cell .day-num{font-weight:700;border-bottom:2px solid #1a1a1a;padding-bottom:1px}
 .holiday-name{font-size:10px;color:#c0392b;padding:0 6px 2px;display:block;line-height:1.3}
 .blocked-label{font-size:10px;color:#999;padding:0 6px 2px;display:block}
-
-/* 預約條目 */
 .bk-chip{display:block;margin:1px 4px;padding:2px 6px;border-radius:4px;font-size:11px;cursor:pointer;line-height:1.5;border:none;text-align:left;width:calc(100% - 8px);font-family:inherit;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .bk-chip.confirmed{background:#dbeafe;color:#1e40af}
 .bk-chip.cancelled{background:#f3f4f6;color:#9ca3af;text-decoration:line-through}
@@ -98,8 +96,6 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .badge-cx{display:inline-block;background:#f0f0f0;color:#999;font-size:11px;padding:2px 8px;border-radius:10px}
 .ov-cancel{margin-top:14px;width:100%;padding:10px;font-size:13px;color:#b91c1c;border:1px solid #f0c0c0;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit}
 .ov-cancel:hover{background:#fff5f5}
-
-/* 日期設定選擇視窗 */
 .day-ov-card{background:#fff;border-radius:14px;padding:22px;width:100%;max-width:320px}
 .day-ov-title{font-size:15px;font-weight:500;margin-bottom:16px;text-align:center}
 .day-ov-btns{display:flex;flex-direction:column;gap:10px}
@@ -107,38 +103,38 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 .day-ov-btn:hover{border-color:#999}
 .day-ov-btn.active{border-color:#1a1a1a;background:#f7f7f7}
 .day-ov-btn .ico{font-size:18px;flex-shrink:0}
-.day-ov-btn .txt{flex:1}
 .day-ov-btn .txt .t1{font-weight:500}
 .day-ov-btn .txt .t2{font-size:12px;color:#888;margin-top:2px}
 .day-ov-divider{border:none;border-top:1px solid #f0f0f0;margin:12px 0}
 
 /* 服務設定 */
 #svc-page{display:none;padding:20px;max-width:600px}
-#svc-page h2{font-size:14px;font-weight:500;margin-bottom:16px}
+#svc-page h2{font-size:15px;font-weight:500;margin-bottom:16px}
 .svc-cat-block{border:1px solid #e0e0e0;border-radius:10px;background:#fff;margin-bottom:12px;overflow:hidden}
 .svc-cat-hd{display:flex;align-items:center;padding:12px 14px;gap:10px;background:#f7f7f7;border-bottom:1px solid #e0e0e0}
 .svc-cat-name{flex:1;font-size:14px;font-weight:500}
 .svc-del-cat{padding:4px 10px;font-size:12px;color:#b91c1c;border:1px solid #f0c0c0;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
-.svc-sub-row{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid #f5f5f5;font-size:13px}
+.svc-sub-row{display:flex;align-items:center;gap:8px;padding:9px 14px;border-bottom:1px solid #f5f5f5;font-size:13px}
 .svc-sub-row .sn{flex:1}
-.svc-sub-row input{width:64px;padding:4px 6px;font-size:13px;border:1px solid #ddd;border-radius:6px;text-align:center;font-family:inherit}
+.svc-sub-row .min-inp{width:64px;padding:4px 6px;font-size:13px;border:1px solid #ddd;border-radius:6px;text-align:center;font-family:inherit}
 .svc-sub-row .unit{font-size:12px;color:#888}
 .svc-del-sub{padding:3px 8px;font-size:12px;color:#b91c1c;border:1px solid #f0c0c0;border-radius:6px;background:#fff;cursor:pointer;font-family:inherit}
 .add-sub-row{display:flex;gap:8px;padding:8px 14px;align-items:center}
-.add-sub-row input{padding:6px 10px;font-size:13px;border:1px solid #ddd;border-radius:7px;font-family:inherit}
-.add-sub-row input.inp-sub{flex:1}
-.add-sub-row input.inp-min{width:70px;text-align:center}
-.add-sub-row button{padding:6px 12px;font-size:12px;border:1px solid #ddd;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit;white-space:nowrap}
-.add-sub-row button:hover{border-color:#999}
-.add-cat-row{display:flex;gap:8px;margin-bottom:16px;align-items:center}
+.add-sub-row .inp-sub{flex:1;padding:6px 10px;font-size:13px;border:1px solid #ddd;border-radius:7px;font-family:inherit}
+.add-sub-row .inp-min{width:70px;padding:6px 8px;text-align:center;font-size:13px;border:1px solid #ddd;border-radius:7px;font-family:inherit}
+.add-sub-row .add-sub-btn{padding:6px 12px;font-size:12px;border:1px solid #ddd;border-radius:7px;background:#fff;cursor:pointer;font-family:inherit;white-space:nowrap}
+.add-sub-row .add-sub-btn:hover{border-color:#999}
+.add-cat-row{display:flex;gap:8px;margin-bottom:16px}
 .add-cat-row input{flex:1;padding:8px 12px;font-size:14px;border:1px solid #ddd;border-radius:8px;font-family:inherit}
 .add-cat-row button{padding:8px 16px;font-size:13px;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;white-space:nowrap}
 .add-cat-row button:hover{border-color:#999}
 .save-svc-btn{width:100%;padding:12px;font-size:14px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;font-family:inherit;margin-top:8px}
 .save-svc-btn:disabled{background:#ccc;cursor:not-allowed}
-.svc-msg{font-size:12px;text-align:center;padding:8px;border-radius:8px;margin-top:8px}
-.svc-msg.ok{background:#e6f7ed;color:#0a7a3d}
-.svc-msg.err{background:#fde8e8;color:#b91c1c}
+.svc-status{font-size:12px;text-align:center;padding:8px;border-radius:8px;margin-top:8px}
+.svc-status.ok{background:#e6f7ed;color:#0a7a3d}
+.svc-status.err{background:#fde8e8;color:#b91c1c}
+
+/* 搜尋結果 */
 #search-page{display:none;padding:20px;max-width:560px}
 #search-page h2{font-size:14px;font-weight:500;margin-bottom:14px}
 .sr-card{border:1px solid #e0e0e0;border-radius:10px;padding:14px;margin-bottom:10px;background:#fff;font-size:13px;line-height:1.8}
@@ -168,7 +164,7 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 <div id="main-screen">
   <div class="topbar">
     <div class="logo-sm">A</div>
-    <h1>AUROS TESLA 後台管理</h1>
+    <span class="site-title" id="back-to-cal">AUROS TESLA 後台管理</span>
     <button class="tb-btn" id="svc-toggle">⚙️ 服務設定</button>
     <button class="tb-btn" id="search-toggle">🔍 搜尋客戶</button>
     <button class="tb-btn" id="refresh-btn">↻ 重新整理</button>
@@ -198,6 +194,7 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
     </div>
   </div>
 
+  <!-- 月曆 -->
   <div class="cal-wrap" id="cal-wrap">
     <div class="cal-nav">
       <span class="m-lbl" id="m-lbl"></span>
@@ -207,9 +204,9 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
     </div>
     <div class="cal-legend">
       <div style="display:flex;align-items:center;gap:5px"><div class="legend-dot" style="background:#fff0f0;border:1px solid #ecc"></div>假日/週末</div>
-      <div style="display:flex;align-items:center;gap:5px"><div class="legend-dot" style="background:repeating-linear-gradient(-45deg,#f5f5f5,#f5f5f5 3px,#ddd 3px,#ddd 6px)"></div>封鎖（不開放預約）</div>
+      <div style="display:flex;align-items:center;gap:5px"><div class="legend-dot" style="background:repeating-linear-gradient(-45deg,#f5f5f5,#f5f5f5 3px,#ddd 3px,#ddd 6px)"></div>封鎖（不開放）</div>
       <div style="display:flex;align-items:center;gap:5px"><div class="legend-dot" style="background:#dbeafe"></div>有預約</div>
-      <span style="color:#aaa;font-size:11px">點擊任何日期可設定是否開放預約</span>
+      <span style="color:#aaa;font-size:11px">點擊日期可設定是否開放預約</span>
     </div>
     <table class="cal-table">
       <thead><tr id="cal-th"></tr></thead>
@@ -217,47 +214,39 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
     </table>
   </div>
 
-  <div id="search-page">
-    <h2 id="sp-title"></h2>
-    <div id="sp-list"></div>
-  </div>
-
-  <!-- 服務設定頁 -->
+  <!-- 服務設定 -->
   <div id="svc-page">
-    <h2>服務項目設定</h2>
+    <h2>⚙️ 服務項目設定</h2>
     <div class="add-cat-row">
-      <input type="text" id="new-cat-inp" placeholder="新增大項目名稱">
+      <input type="text" id="new-cat-inp" placeholder="輸入新大項目名稱">
       <button id="add-cat-btn">＋ 新增大項</button>
     </div>
     <div id="svc-blocks"></div>
     <button class="save-svc-btn" id="save-svc-btn">儲存所有服務項目</button>
-    <div id="svc-msg"></div>
+    <div id="svc-status"></div>
+  </div>
+
+  <!-- 搜尋結果 -->
+  <div id="search-page">
+    <h2 id="sp-title"></h2>
+    <div id="sp-list"></div>
   </div>
 </div>
 
-<!-- Overlay（預約詳情 / 日期設定） -->
+<!-- Overlay -->
 <div id="overlay">
   <div class="ov-card" id="ov-booking" style="display:none">
-    <div class="ov-top">
-      <h2 id="ov-title"></h2>
-      <button class="ov-close" id="ov-close">×</button>
-    </div>
+    <div class="ov-top"><h2 id="ov-title"></h2><button class="ov-close" id="ov-close">×</button></div>
     <div id="ov-body"></div>
   </div>
   <div class="day-ov-card" id="ov-day" style="display:none">
     <div class="ov-top">
-      <h2 id="day-ov-title" class="day-ov-title" style="flex:1"></h2>
+      <h2 id="day-ov-title" style="flex:1"></h2>
       <button class="ov-close" id="day-ov-close">×</button>
     </div>
     <div class="day-ov-btns">
-      <button class="day-ov-btn" id="btn-open">
-        <span class="ico">✅</span>
-        <span class="txt"><div class="t1">開放預約</div><div class="t2">客戶可在此日期預約服務</div></span>
-      </button>
-      <button class="day-ov-btn" id="btn-block">
-        <span class="ico">🚫</span>
-        <span class="txt"><div class="t1">封鎖此日期</div><div class="t2">客戶無法在此日期預約</div></span>
-      </button>
+      <button class="day-ov-btn" id="btn-open"><span class="ico">✅</span><span class="txt"><div class="t1">開放預約</div><div class="t2">客戶可在此日期預約</div></span></button>
+      <button class="day-ov-btn" id="btn-block"><span class="ico">🚫</span><span class="txt"><div class="t1">封鎖此日期</div><div class="t2">客戶無法在此日期預約</div></span></button>
     </div>
     <hr class="day-ov-divider">
     <div id="day-bk-list"></div>
@@ -272,12 +261,6 @@ var TIMEOUT_MS  = 15 * 60 * 1000;
 var WD = ['一','二','三','四','五','六','日'];
 var WD_FULL = ['週日','週一','週二','週三','週四','週五','週六'];
 var BAR_COLORS = ['c0','c1','c2','c3'];
-var CAT = {
-  '電系改裝':     {'電吸門':60,'幻彩把手':60,'數位儀表板':60},
-  '避震器/煞車系統改裝': {'避震器':60,'煞車系統':60},
-  '外觀套件':     {'外觀套件':120},
-  '基礎保養/檢測': {'基礎保養/檢測':60}
-};
 var HOLIDAYS = {
   '2026-01-01':'元旦','2026-01-02':'元旦補假',
   '2026-01-28':'除夕','2026-01-29':'春節','2026-01-30':'春節','2026-01-31':'春節','2026-02-02':'春節補假',
@@ -288,7 +271,7 @@ var HOLIDAYS = {
   '2026-10-09':'國慶補假','2026-10-10':'國慶日'
 };
 
-var G = { vy:0, vm:0, all:[], blocked:[], range:'today', curDate:null };
+var G = { vy:0, vm:0, all:[], blocked:[], cat:{}, range:'today', curDate:null };
 var _timer = null;
 
 function p2(n){ return String(n).padStart(2,'0'); }
@@ -296,14 +279,13 @@ function fmtISO(d){ return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDa
 function fmtDT(d){ return (d.getMonth()+1)+'/'+d.getDate()+'（'+WD_FULL[d.getDay()]+'）'+p2(d.getHours())+':'+p2(d.getMinutes()); }
 function fmtMins(m){ var h=Math.floor(m/60),r=m%60; return h&&r?h+'小時'+r+'分':h?h+'小時':r+'分'; }
 function sameDay(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
-// 週一為第一天
-function getWeekIndex(d){ var w=d.getDay(); return w===0?6:w-1; }
+function weekIdx(d){ var w=d.getDay(); return w===0?6:w-1; }
 function getMins(svcStr){
   var t=0;
   String(svcStr).split('、').forEach(function(s){
     s=s.trim(); var di=s.indexOf('-'),m=0;
-    if(di>-1){var c=s.substring(0,di),sub=s.substring(di+1);if(CAT[c]&&CAT[c][sub])m=CAT[c][sub];}
-    else{if(CAT[s]&&CAT[s][s])m=CAT[s][s];}
+    if(di>-1){var c=s.substring(0,di),sub=s.substring(di+1);if(G.cat[c]&&G.cat[c][sub])m=G.cat[c][sub];}
+    else{if(G.cat[s]&&G.cat[s][s])m=G.cat[s][s];}
     t+=m;
   });
   return t;
@@ -311,61 +293,75 @@ function getMins(svcStr){
 function getSvcLines(svcStr){
   return String(svcStr).split('、').map(function(s){
     s=s.trim(); var di=s.indexOf('-'),m=0;
-    if(di>-1){var c=s.substring(0,di),sub=s.substring(di+1);if(CAT[c]&&CAT[c][sub])m=CAT[c][sub];}
-    else{if(CAT[s]&&CAT[s][s])m=CAT[s][s];}
+    if(di>-1){var c=s.substring(0,di),sub=s.substring(di+1);if(G.cat[c]&&G.cat[c][sub])m=G.cat[c][sub];}
+    else{if(G.cat[s]&&G.cat[s][s])m=G.cat[s][s];}
     return s+'（約'+fmtMins(m)+'）';
   });
 }
 
 /* ── Session ── */
-function saveSession(){ try{ localStorage.setItem(SESSION_KEY,String(Date.now())); }catch(e){} }
-function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+function saveSession(){ try{localStorage.setItem(SESSION_KEY,String(Date.now()));}catch(e){} }
+function clearSession(){ try{localStorage.removeItem(SESSION_KEY);}catch(e){} }
 function checkSession(){
-  try{ var ts=parseInt(localStorage.getItem(SESSION_KEY)||'0',10); return ts&&(Date.now()-ts)<TIMEOUT_MS; }
-  catch(e){ return false; }
+  try{var ts=parseInt(localStorage.getItem(SESSION_KEY)||'0',10);return ts&&(Date.now()-ts)<TIMEOUT_MS;}
+  catch(e){return false;}
 }
 function resetTimer(){
-  saveSession(); clearTimeout(_timer);
-  _timer=setTimeout(function(){ clearSession(); doLogout(); alert('閒置超過 15 分鐘，已自動登出'); }, TIMEOUT_MS);
+  saveSession();clearTimeout(_timer);
+  _timer=setTimeout(function(){clearSession();doLogout();alert('閒置超過 15 分鐘，已自動登出');},TIMEOUT_MS);
 }
 ['click','keydown','mousemove','touchstart'].forEach(function(e){
-  document.addEventListener(e,function(){ if(checkSession())resetTimer(); },{passive:true});
+  document.addEventListener(e,function(){if(checkSession())resetTimer();},{passive:true});
 });
 
-/* ── 登入 / 登出 ── */
+/* ── 登入/登出 ── */
 function doLogin(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('main-screen').style.display='flex';
-  var now=new Date(); G.vy=now.getFullYear(); G.vm=now.getMonth();
-  resetTimer(); loadAll();
+  var now=new Date();G.vy=now.getFullYear();G.vm=now.getMonth();
+  resetTimer();loadAll();
 }
 function doLogout(){
-  clearTimeout(_timer); clearSession();
+  clearTimeout(_timer);clearSession();
   document.getElementById('main-screen').style.display='none';
   document.getElementById('login-screen').style.display='flex';
-  document.getElementById('pw').value=''; G.all=[];
+  document.getElementById('pw').value='';G.all=[];
 }
 document.getElementById('login-btn').onclick=function(){
   if(document.getElementById('pw').value===ADMIN_PASSWORD){
-    document.getElementById('login-err').textContent=''; doLogin();
-  } else { document.getElementById('login-err').textContent='密碼錯誤，請重試'; }
+    document.getElementById('login-err').textContent='';doLogin();
+  }else{document.getElementById('login-err').textContent='密碼錯誤，請重試';}
 };
-document.getElementById('pw').onkeydown=function(e){ if(e.key==='Enter')document.getElementById('login-btn').click(); };
+document.getElementById('pw').onkeydown=function(e){if(e.key==='Enter')document.getElementById('login-btn').click();};
 document.getElementById('logout-btn').onclick=doLogout;
-document.getElementById('refresh-btn').onclick=function(){ resetTimer(); loadAll(); };
-if(checkSession()){ doLogin(); }
+document.getElementById('refresh-btn').onclick=function(){resetTimer();loadAll();};
+if(checkSession()){doLogin();}
+
+/* ── 頁面切換 ── */
+function hideAllPages(){
+  document.getElementById('cal-wrap').style.display='none';
+  document.getElementById('svc-page').style.display='none';
+  document.getElementById('search-page').style.display='none';
+}
+function showCal(){
+  hideAllPages();
+  document.getElementById('cal-wrap').style.display='block';
+}
+document.getElementById('back-to-cal').onclick=showCal;
 
 /* ── 資料載入 ── */
 function loadAll(){
   document.getElementById('m-lbl').textContent='載入中…';
   Promise.all([
     fetch(API+'?action=bookings').then(function(r){return r.json();}),
-    fetch(API+'?action=blocked_dates').then(function(r){return r.json();})
-  ]).then(function(results){
-    G.all     = results[0].success ? (results[0].bookings||[]) : [];
-    G.blocked = results[1].success ? (results[1].blocked_dates||[]) : [];
-    renderCal(); renderStats();
-  }).catch(function(){ G.all=[]; G.blocked=[]; renderCal(); renderStats(); });
+    fetch(API+'?action=blocked_dates').then(function(r){return r.json();}),
+    fetch(API+'?action=catalog').then(function(r){return r.json();})
+  ]).then(function(res){
+    G.all     = res[0].success?(res[0].bookings||[]):[];
+    G.blocked = res[1].success?(res[1].blocked_dates||[]):[];
+    G.cat     = res[2].success?(res[2].catalog||{}):G.cat;
+    renderCal();renderStats();
+  }).catch(function(){renderCal();renderStats();});
 }
 
 /* ── 月曆 ── */
@@ -374,29 +370,26 @@ function renderCal(){
   var th=document.getElementById('cal-th');
   th.innerHTML='';
   WD.forEach(function(w,i){
-    var td=document.createElement('th');
-    td.textContent=w;
-    if(i===0||i===6) td.className='wk-h';
+    var td=document.createElement('th');td.textContent=w;
+    if(i>=5)td.className='wk-h';
     th.appendChild(td);
   });
 
-  var tbody=document.getElementById('cal-body');
-  tbody.innerHTML='';
-  var today=new Date(); today.setHours(0,0,0,0);
+  var tbody=document.getElementById('cal-body');tbody.innerHTML='';
+  var today=new Date();today.setHours(0,0,0,0);
   var first=new Date(G.vy,G.vm,1);
   var lastDay=new Date(G.vy,G.vm+1,0).getDate();
-  var startWd=getWeekIndex(first);
+  var startWd=weekIdx(first);
 
   var cells=[];
   for(var i=0;i<startWd;i++) cells.push({d:new Date(G.vy,G.vm,1-startWd+i),cur:false});
   for(var d=1;d<=lastDay;d++) cells.push({d:new Date(G.vy,G.vm,d),cur:true});
-  var tail=cells.length%7; if(tail>0){ for(var j=1;j<=7-tail;j++) cells.push({d:new Date(G.vy,G.vm+1,j),cur:false}); }
+  var tail=cells.length%7;if(tail>0){for(var j=1;j<=7-tail;j++)cells.push({d:new Date(G.vy,G.vm+1,j),cur:false});}
 
   for(var r=0;r<cells.length/7;r++){
     var tr=document.createElement('tr');
     for(var c=0;c<7;c++){
-      var cell=cells[r*7+c];
-      var dt=cell.d; var iso=fmtISO(dt);
+      var cell=cells[r*7+c];var dt=cell.d;var iso=fmtISO(dt);
       var isWk=(dt.getDay()===0||dt.getDay()===6);
       var isHol=HOLIDAYS.hasOwnProperty(iso);
       var isBlocked=G.blocked.indexOf(iso)!==-1;
@@ -404,60 +397,45 @@ function renderCal(){
 
       var td2=document.createElement('td');
       var cls=[];
-      if(!cell.cur)          cls.push('other-m');
-      if(isTd)               cls.push('today-cell');
-      if(isBlocked&&cell.cur) cls.push('blocked-cell');
-      else if(isWk&&cell.cur) cls.push('wkend-cell');
-      else if(isHol&&cell.cur)cls.push('holiday-cell');
-      if(cls.length) td2.className=cls.join(' ');
+      if(!cell.cur)cls.push('other-m');
+      if(isTd)cls.push('today-cell');
+      if(cell.cur){
+        if(isBlocked)cls.push('blocked-cell');
+        else if(isWk)cls.push('wkend-cell');
+        else if(isHol)cls.push('holiday-cell');
+      }
+      if(cls.length)td2.className=cls.join(' ');
 
-      // 日期數字
       var dn=document.createElement('span');
       dn.className='day-num'+((isWk||isHol)&&cell.cur?' wk-num':'');
       dn.textContent=dt.getDate();
       td2.appendChild(dn);
 
       if(cell.cur){
-        // 假日名稱
-        if(isHol){
-          var hn=document.createElement('span');
-          hn.className='holiday-name';
-          hn.textContent=HOLIDAYS[iso];
-          td2.appendChild(hn);
-        }
-        // 封鎖標籤
-        if(isBlocked){
-          var bl=document.createElement('span');
-          bl.className='blocked-label';
-          bl.textContent='🚫 不開放預約';
-          td2.appendChild(bl);
-        }
+        if(isHol){var hn=document.createElement('span');hn.className='holiday-name';hn.textContent=HOLIDAYS[iso];td2.appendChild(hn);}
+        if(isBlocked){var bl=document.createElement('span');bl.className='blocked-label';bl.textContent='🚫 不開放預約';td2.appendChild(bl);}
 
-        // 預約條目
-        var dayBks=G.all.filter(function(b){ return String(b.start_time).indexOf(iso)===0; });
-        dayBks.sort(function(a,b){ return new Date(a.start_time)-new Date(b.start_time); });
-        var maxShow=2;
-        dayBks.slice(0,maxShow).forEach(function(b){
+        var dayBks=G.all.filter(function(b){return String(b.start_time).indexOf(iso)===0;});
+        dayBks.sort(function(a,b){return new Date(a.start_time)-new Date(b.start_time);});
+        dayBks.slice(0,2).forEach(function(b){
           var chip=document.createElement('button');
           chip.className='bk-chip '+(b.status==='已確認'?'confirmed':'cancelled');
           var s=new Date(b.start_time);
           chip.textContent=p2(s.getHours())+':'+p2(s.getMinutes())+' '+b.customer_name;
-          chip.onclick=(function(bk){ return function(e){ e.stopPropagation(); showBookingOverlay(bk); }; })(b);
+          chip.onclick=(function(bk){return function(e){e.stopPropagation();showBookingOverlay(bk);};})(b);
           td2.appendChild(chip);
         });
-        if(dayBks.length>maxShow){
-          var more=document.createElement('button');
-          more.className='more-chip';
-          more.textContent='還有 '+(dayBks.length-maxShow)+' 筆…';
-          more.onclick=(function(bks,dt2){ return function(e){ e.stopPropagation(); showDayList(dt2,bks); }; })(dayBks,dt);
+        if(dayBks.length>2){
+          var more=document.createElement('button');more.className='more-chip';
+          more.textContent='還有 '+(dayBks.length-2)+' 筆…';
+          more.onclick=(function(bks,dt2){return function(e){e.stopPropagation();showDayList(dt2,bks);};})(dayBks,dt);
           td2.appendChild(more);
         }
 
-        // 點擊格子開啟日期設定
-        td2.onclick=function(dt3,iso3,isBlocked3){ return function(e){
-          if(e.target.classList.contains('bk-chip')||e.target.classList.contains('more-chip')) return;
-          showDayOverlay(dt3,iso3,isBlocked3);
-        };}(dt,iso,isBlocked);
+        td2.onclick=(function(dt3,iso3,ib){return function(e){
+          if(e.target.classList.contains('bk-chip')||e.target.classList.contains('more-chip'))return;
+          showDayOverlay(dt3,iso3,ib);
+        };})(dt,iso,isBlocked);
       }
       tr.appendChild(td2);
     }
@@ -465,41 +443,31 @@ function renderCal(){
   }
 }
 
-document.getElementById('prev-m').onclick=function(){ G.vm--; if(G.vm<0){G.vm=11;G.vy--;} renderCal(); };
-document.getElementById('next-m').onclick=function(){ G.vm++; if(G.vm>11){G.vm=0;G.vy++;} renderCal(); };
-document.getElementById('to-today').onclick=function(){ var n=new Date(); G.vy=n.getFullYear(); G.vm=n.getMonth(); renderCal(); };
+document.getElementById('prev-m').onclick=function(){G.vm--;if(G.vm<0){G.vm=11;G.vy--;}renderCal();};
+document.getElementById('next-m').onclick=function(){G.vm++;if(G.vm>11){G.vm=0;G.vy++;}renderCal();};
+document.getElementById('to-today').onclick=function(){var n=new Date();G.vy=n.getFullYear();G.vm=n.getMonth();renderCal();};
 
 /* ── 日期設定 Overlay ── */
 function showDayOverlay(dt,iso,isBlocked){
   G.curDate={dt:dt,iso:iso,blocked:isBlocked};
-  var wds=['週日','週一','週二','週三','週四','週五','週六'];
-  document.getElementById('day-ov-title').textContent=(dt.getMonth()+1)+'/'+dt.getDate()+'（'+wds[dt.getDay()]+'）';
+  document.getElementById('day-ov-title').textContent=(dt.getMonth()+1)+'/'+dt.getDate()+'（'+WD_FULL[dt.getDay()]+'）';
   document.getElementById('btn-open').classList.toggle('active',!isBlocked);
   document.getElementById('btn-block').classList.toggle('active',isBlocked);
-
-  // 當天預約列表
-  var dayBks=G.all.filter(function(b){ return String(b.start_time).indexOf(iso)===0; });
+  var dayBks=G.all.filter(function(b){return String(b.start_time).indexOf(iso)===0;});
   var listEl=document.getElementById('day-bk-list');
-  if(dayBks.length===0){
-    listEl.innerHTML='<div style="font-size:12px;color:#aaa;text-align:center;padding:6px 0">當日無預約</div>';
-  } else {
-    listEl.innerHTML=dayBks.map(function(b){
-      var s=new Date(b.start_time),e=new Date(b.end_time);
-      var isCx=b.status==='已取消';
-      return '<div style="font-size:12px;line-height:1.7;padding:6px 0;border-top:1px solid #f0f0f0;'+(isCx?'opacity:.5':'')+'">'+
-        '<strong>'+b.customer_name+'</strong>　'+p2(s.getHours())+':'+p2(s.getMinutes())+' 至 '+p2(e.getHours())+':'+p2(e.getMinutes())+'　'+
-        '<span style="font-size:11px;color:'+(isCx?'#999':'#0a7a3d')+'">'+b.status+'</span><br>'+
-        b.services+'</div>';
-    }).join('');
-  }
-
+  listEl.innerHTML=dayBks.length?dayBks.map(function(b){
+    var s=new Date(b.start_time),e=new Date(b.end_time);var isCx=b.status==='已取消';
+    return '<div style="font-size:12px;line-height:1.7;padding:6px 0;border-top:1px solid #f0f0f0;'+(isCx?'opacity:.5':'')+'">'+
+      '<strong>'+b.customer_name+'</strong>　'+p2(s.getHours())+':'+p2(s.getMinutes())+' 至 '+p2(e.getHours())+':'+p2(e.getMinutes())+'　'+
+      '<span style="font-size:11px;color:'+(isCx?'#999':'#0a7a3d')+'">'+b.status+'</span><br>'+b.services+'</div>';
+  }).join(''):'<div style="font-size:12px;color:#aaa;text-align:center;padding:8px">當日無預約</div>';
   document.getElementById('ov-booking').style.display='none';
   document.getElementById('ov-day').style.display='block';
   document.getElementById('overlay').classList.add('show');
 }
 
 function setBlocked(blocked){
-  if(!G.curDate) return;
+  if(!G.curDate)return;
   var iso=G.curDate.iso;
   var btn=blocked?document.getElementById('btn-block'):document.getElementById('btn-open');
   btn.disabled=true;
@@ -508,23 +476,22 @@ function setBlocked(blocked){
   }).then(function(r){return r.json();}).then(function(d){
     btn.disabled=false;
     if(d.success){
-      if(blocked){ if(G.blocked.indexOf(iso)===-1) G.blocked.push(iso); }
-      else{ var i=G.blocked.indexOf(iso); if(i!==-1) G.blocked.splice(i,1); }
+      if(blocked){if(G.blocked.indexOf(iso)===-1)G.blocked.push(iso);}
+      else{var i=G.blocked.indexOf(iso);if(i!==-1)G.blocked.splice(i,1);}
       G.curDate.blocked=blocked;
       document.getElementById('btn-open').classList.toggle('active',!blocked);
       document.getElementById('btn-block').classList.toggle('active',blocked);
       renderCal();
-    } else { alert(d.error||'設定失敗'); }
-  }).catch(function(){ btn.disabled=false; alert('連線失敗'); });
+    }else{alert(d.error||'設定失敗');}
+  }).catch(function(){btn.disabled=false;alert('連線失敗');});
 }
-
-document.getElementById('btn-open').onclick=function(){ setBlocked(false); };
-document.getElementById('btn-block').onclick=function(){ setBlocked(true); };
+document.getElementById('btn-open').onclick=function(){setBlocked(false);};
+document.getElementById('btn-block').onclick=function(){setBlocked(true);};
 document.getElementById('day-ov-close').onclick=closeOverlay;
 
 /* ── 預約詳情 Overlay ── */
 function showBookingOverlay(b){
-  var s=new Date(b.start_time), e=new Date(b.end_time);
+  var s=new Date(b.start_time),e=new Date(b.end_time);
   var isCx=b.status==='已取消';
   var lines=getSvcLines(b.services);
   var totalM=getMins(b.services);
@@ -548,25 +515,22 @@ function showBookingOverlay(b){
   if(!isCx){
     document.getElementById('ov-cx-btn').onclick=function(){
       if(!confirm('確定要取消 '+b.customer_name+' 的預約嗎？'))return;
-      var btn=document.getElementById('ov-cx-btn');
-      btn.disabled=true; btn.textContent='取消中…';
+      var btn=document.getElementById('ov-cx-btn');btn.disabled=true;btn.textContent='取消中…';
       fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},
         body:JSON.stringify({action:'cancel',id:b.id,admin:true})
       }).then(function(r){return r.json();}).then(function(d){
-        if(d.success){ closeOverlay(); loadAll(); }
-        else{ btn.disabled=false; btn.textContent='取消此預約'; alert(d.error||'取消失敗'); }
-      }).catch(function(){ btn.disabled=false; btn.textContent='取消此預約'; alert('連線失敗'); });
+        if(d.success){closeOverlay();loadAll();}
+        else{btn.disabled=false;btn.textContent='取消此預約';alert(d.error||'取消失敗');}
+      }).catch(function(){btn.disabled=false;btn.textContent='取消此預約';alert('連線失敗');});
     };
   }
 }
 
 function showDayList(dt,bks){
-  var wds=['週日','週一','週二','週三','週四','週五','週六'];
-  document.getElementById('ov-title').textContent=(dt.getMonth()+1)+'/'+dt.getDate()+'（'+wds[dt.getDay()]+'）全部預約';
+  document.getElementById('ov-title').textContent=(dt.getMonth()+1)+'/'+dt.getDate()+'（'+WD_FULL[dt.getDay()]+'）全部預約';
   var html='';
   bks.forEach(function(b){
-    var s=new Date(b.start_time),e=new Date(b.end_time);
-    var isCx=b.status==='已取消';
+    var s=new Date(b.start_time),e=new Date(b.end_time);var isCx=b.status==='已取消';
     var lines=getSvcLines(b.services);
     html+='<div style="border:1px solid #eee;border-radius:8px;padding:10px;margin-bottom:8px;font-size:12px;line-height:1.8'+(isCx?';opacity:.5':'')+'">'+
       '<div style="display:flex;justify-content:space-between;margin-bottom:3px"><strong>'+b.customer_name+'</strong><span class="'+(isCx?'badge-cx':'badge-ok')+'">'+b.status+'</span></div>'+
@@ -580,233 +544,162 @@ function showDayList(dt,bks){
   document.getElementById('overlay').classList.add('show');
 }
 
-function closeOverlay(){ document.getElementById('overlay').classList.remove('show'); }
+function closeOverlay(){document.getElementById('overlay').classList.remove('show');}
 document.getElementById('ov-close').onclick=closeOverlay;
-document.getElementById('overlay').onclick=function(e){ if(e.target===this)closeOverlay(); };
+document.getElementById('overlay').onclick=function(e){if(e.target===this)closeOverlay();};
 
 /* ── 儀表板統計 ── */
 document.querySelectorAll('.dash-tab').forEach(function(tab){
   tab.onclick=function(){
     document.querySelectorAll('.dash-tab').forEach(function(t){t.classList.remove('on');});
-    tab.classList.add('on'); G.range=tab.dataset.r; renderStats();
+    tab.classList.add('on');G.range=tab.dataset.r;renderStats();
   };
 });
 function getRange(r){
-  var now=new Date(); now.setHours(0,0,0,0);
-  if(r==='today') return{s:fmtISO(now),e:fmtISO(now)};
+  var now=new Date();now.setHours(0,0,0,0);
+  if(r==='today')return{s:fmtISO(now),e:fmtISO(now)};
   if(r==='week'){
-    var mon=new Date(now); mon.setDate(now.getDate()-(now.getDay()===0?6:now.getDay()-1));
-    var sun=new Date(mon); sun.setDate(mon.getDate()+6);
-    return{s:fmtISO(mon),e:fmtISO(sun)};
+    var mon=new Date(now);mon.setDate(now.getDate()-(now.getDay()===0?6:now.getDay()-1));
+    var sun=new Date(mon);sun.setDate(mon.getDate()+6);return{s:fmtISO(mon),e:fmtISO(sun)};
   }
-  return{s:fmtISO(new Date(now.getFullYear(),now.getMonth(),1)),
-         e:fmtISO(new Date(now.getFullYear(),now.getMonth()+1,0))};
+  return{s:fmtISO(new Date(now.getFullYear(),now.getMonth(),1)),e:fmtISO(new Date(now.getFullYear(),now.getMonth()+1,0))};
 }
 function renderStats(){
   var rng=getRange(G.range);
-  var bks=G.all.filter(function(b){
-    var ds=String(b.start_time).substring(0,10);
-    return ds>=rng.s&&ds<=rng.e&&b.status==='已確認';
-  });
+  var bks=G.all.filter(function(b){var ds=String(b.start_time).substring(0,10);return ds>=rng.s&&ds<=rng.e&&b.status==='已確認';});
   document.getElementById('st-count').textContent=bks.length;
   var totalM=bks.reduce(function(s,b){return s+getMins(b.services);},0);
   document.getElementById('st-hours').textContent=Math.round(totalM/60*10)/10;
   var cnt={};
-  bks.forEach(function(b){
-    String(b.services).split('、').forEach(function(s){
-      s=s.trim(); var cat=s.indexOf('-')>-1?s.split('-')[0]:s;
-      cnt[cat]=(cnt[cat]||0)+1;
-    });
-  });
+  bks.forEach(function(b){String(b.services).split('、').forEach(function(s){s=s.trim();var cat=s.indexOf('-')>-1?s.split('-')[0]:s;cnt[cat]=(cnt[cat]||0)+1;});});
   var total=Object.values(cnt).reduce(function(a,b){return a+b;},0);
-  var barsEl=document.getElementById('dash-bars'); barsEl.innerHTML='';
+  var barsEl=document.getElementById('dash-bars');barsEl.innerHTML='';
   if(!total){barsEl.innerHTML='<span style="font-size:12px;color:#aaa">此區間無資料</span>';return;}
   Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];}).slice(0,4).forEach(function(name,i){
     var pct=Math.round(cnt[name]/total*100);
-    var item=document.createElement('div'); item.className='db-item';
-    item.innerHTML='<div class="db-dot '+BAR_COLORS[i]+'"></div>'+
-      '<span style="max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+name+'</span>'+
-      '<strong>'+pct+'%</strong>';
+    var item=document.createElement('div');item.className='db-item';
+    item.innerHTML='<div class="db-dot '+BAR_COLORS[i]+'"></div><span style="max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+name+'</span><strong>'+pct+'%</strong>';
     barsEl.appendChild(item);
   });
 }
 
-/* ── 頁面切換工具 ── */
-function hideAllPages(){
-  document.getElementById('cal-wrap').style.display='none';
-  document.getElementById('search-page').style.display='none';
-  document.getElementById('svc-page').style.display='none';
-}
-function showCal(){
-  hideAllPages();
-  document.getElementById('cal-wrap').style.display='block';
-}
-
 /* ── 服務設定 ── */
-var G_CAT = {}; // 目前編輯中的服務目錄
+var G_CAT = {};
 
-document.getElementById('svc-toggle').onclick = function(){
-  var isOpen = document.getElementById('svc-page').style.display === 'block';
+document.getElementById('svc-toggle').onclick=function(){
   hideAllPages();
-  if(!isOpen){
-    document.getElementById('svc-page').style.display = 'block';
-    loadSvcSettings();
-  }
+  document.getElementById('svc-page').style.display='block';
+  loadSvcSettings();
 };
 
 function loadSvcSettings(){
   fetch(API+'?action=catalog')
     .then(function(r){return r.json();})
     .then(function(d){
-      G_CAT = d.success ? JSON.parse(JSON.stringify(d.catalog||{})) : {};
+      G_CAT=d.success?JSON.parse(JSON.stringify(d.catalog||{})):{};
       renderSvcBlocks();
-    })
-    .catch(function(){ G_CAT={}; renderSvcBlocks(); });
+    }).catch(function(){G_CAT={};renderSvcBlocks();});
 }
 
 function renderSvcBlocks(){
-  var el=document.getElementById('svc-blocks');
-  el.innerHTML='';
+  var el=document.getElementById('svc-blocks');el.innerHTML='';
   Object.keys(G_CAT).forEach(function(cat){
-    var block=document.createElement('div');
-    block.className='svc-cat-block';
+    var block=document.createElement('div');block.className='svc-cat-block';
     // 大項標題
     var hd=document.createElement('div');hd.className='svc-cat-hd';
-    hd.innerHTML='<span class="svc-cat-name">'+cat+'</span>';
-    var delCat=document.createElement('button');
-    delCat.className='svc-del-cat';delCat.textContent='刪除此大項';
-    delCat.onclick=function(){
-      if(!confirm('確定刪除大項「'+cat+'」及其所有細項？'))return;
-      delete G_CAT[cat];renderSvcBlocks();
-    };
-    hd.appendChild(delCat);
-    block.appendChild(hd);
+    var nm=document.createElement('span');nm.className='svc-cat-name';nm.textContent=cat;
+    var delBtn=document.createElement('button');delBtn.className='svc-del-cat';delBtn.textContent='刪除此大項';
+    delBtn.onclick=(function(c){return function(){if(!confirm('確定刪除大項「'+c+'」及其所有細項？'))return;delete G_CAT[c];renderSvcBlocks();};})(cat);
+    hd.appendChild(nm);hd.appendChild(delBtn);block.appendChild(hd);
 
     // 細項列表
     Object.keys(G_CAT[cat]).forEach(function(sub){
       var row=document.createElement('div');row.className='svc-sub-row';
-      var minInput=document.createElement('input');
-      minInput.type='number';minInput.min='10';minInput.value=G_CAT[cat][sub];
-      minInput.onchange=function(){
-        var v=parseInt(this.value,10);
-        if(v>0) G_CAT[cat][sub]=v;
-      };
-      var delSub=document.createElement('button');
-      delSub.className='svc-del-sub';delSub.textContent='✕';
-      delSub.onclick=function(){
-        delete G_CAT[cat][sub];renderSvcBlocks();
-      };
-      row.innerHTML='<span class="sn">'+sub+'</span>';
-      row.appendChild(minInput);
-      row.innerHTML+=''; // minInput 已附加，補文字
-      var unit=document.createElement('span');unit.className='unit';unit.textContent='分鐘';
-      row.appendChild(unit);
-      row.appendChild(delSub);
-      // 重新組合（避免 innerHTML 覆蓋）
-      var row2=document.createElement('div');row2.className='svc-sub-row';
-      var nm=document.createElement('span');nm.className='sn';nm.textContent=sub;
-      row2.appendChild(nm);
-      row2.appendChild(minInput);
-      row2.appendChild(unit);
-      row2.appendChild(delSub);
-      block.appendChild(row2);
+      var snEl=document.createElement('span');snEl.className='sn';snEl.textContent=sub;
+      var minInp=document.createElement('input');minInp.type='number';minInp.className='min-inp';minInp.min='10';minInp.value=G_CAT[cat][sub];
+      minInp.onchange=(function(c,s,inp){return function(){var v=parseInt(inp.value,10);if(v>0)G_CAT[c][s]=v;};})(cat,sub,minInp);
+      var unitEl=document.createElement('span');unitEl.className='unit';unitEl.textContent='分鐘';
+      var delSub=document.createElement('button');delSub.className='svc-del-sub';delSub.textContent='✕';
+      delSub.onclick=(function(c,s){return function(){delete G_CAT[c][s];renderSvcBlocks();};})(cat,sub);
+      row.appendChild(snEl);row.appendChild(minInp);row.appendChild(unitEl);row.appendChild(delSub);
+      block.appendChild(row);
     });
 
-    // 新增細項列
+    // 新增細項
     var addRow=document.createElement('div');addRow.className='add-sub-row';
-    var subInp=document.createElement('input');
-    subInp.type='text';subInp.className='inp-sub';subInp.placeholder='新增細項名稱';
-    var minInp=document.createElement('input');
-    minInp.type='number';minInp.className='inp-min';minInp.placeholder='分鐘';minInp.value='60';
-    var addBtn=document.createElement('button');addBtn.textContent='＋ 新增';
-    addBtn.onclick=function(){
-      var sn=subInp.value.trim();var mn=parseInt(minInp.value,10);
+    var subInp=document.createElement('input');subInp.type='text';subInp.className='inp-sub';subInp.placeholder='新增細項名稱';
+    var minInp2=document.createElement('input');minInp2.type='number';minInp2.className='inp-min';minInp2.value='60';minInp2.placeholder='分鐘';
+    var addBtn=document.createElement('button');addBtn.className='add-sub-btn';addBtn.textContent='＋ 新增';
+    addBtn.onclick=(function(c,si,mi){return function(){
+      var sn=si.value.trim();var mn=parseInt(mi.value,10);
       if(!sn){alert('請輸入細項名稱');return;}
-      if(!mn||mn<=0){alert('請輸入有效工時（分鐘）');return;}
-      if(G_CAT[cat][sn]!==undefined){alert('此細項已存在');return;}
-      G_CAT[cat][sn]=mn;renderSvcBlocks();
-    };
-    addRow.appendChild(subInp);addRow.appendChild(minInp);addRow.appendChild(addBtn);
+      if(!mn||mn<=0){alert('請輸入有效工時');return;}
+      if(G_CAT[c][sn]!==undefined){alert('此細項已存在');return;}
+      G_CAT[c][sn]=mn;renderSvcBlocks();
+    };})(cat,subInp,minInp2);
+    addRow.appendChild(subInp);addRow.appendChild(minInp2);addRow.appendChild(addBtn);
     block.appendChild(addRow);
     el.appendChild(block);
   });
 }
 
-// 新增大項
 document.getElementById('add-cat-btn').onclick=function(){
   var name=document.getElementById('new-cat-inp').value.trim();
   if(!name){alert('請輸入大項目名稱');return;}
   if(G_CAT[name]!==undefined){alert('此大項已存在');return;}
-  G_CAT[name]={};
-  document.getElementById('new-cat-inp').value='';
-  renderSvcBlocks();
+  G_CAT[name]={};document.getElementById('new-cat-inp').value='';renderSvcBlocks();
 };
 
-// 儲存
 document.getElementById('save-svc-btn').onclick=function(){
-  var btn=this;var msg=document.getElementById('svc-msg');
-  btn.disabled=true;btn.textContent='儲存中…';msg.innerHTML='';
+  var btn=this;var status=document.getElementById('svc-status');
+  btn.disabled=true;btn.textContent='儲存中…';status.innerHTML='';
   fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},
     body:JSON.stringify({action:'save_services',catalog:G_CAT})
-  }).then(function(r){return r.json();})
-    .then(function(d){
-      btn.disabled=false;btn.textContent='儲存所有服務項目';
-      if(d.success){
-        msg.innerHTML='<div class="svc-msg ok">✓ 儲存成功，前台將在下次載入時更新</div>';
-      } else {
-        msg.innerHTML='<div class="svc-msg err">儲存失敗：'+(d.error||'未知錯誤')+'</div>';
-      }
-    }).catch(function(){
-      btn.disabled=false;btn.textContent='儲存所有服務項目';
-      msg.innerHTML='<div class="svc-msg err">連線失敗，請重試</div>';
-    });
+  }).then(function(r){return r.json();}).then(function(d){
+    btn.disabled=false;btn.textContent='儲存所有服務項目';
+    if(d.success){
+      G.cat=JSON.parse(JSON.stringify(G_CAT));
+      status.innerHTML='<div class="svc-status ok">✓ 儲存成功，前台下次載入時將自動更新</div>';
+    }else{status.innerHTML='<div class="svc-status err">儲存失敗：'+(d.error||'未知錯誤')+'</div>';}
+  }).catch(function(){btn.disabled=false;btn.textContent='儲存所有服務項目';status.innerHTML='<div class="svc-status err">連線失敗，請重試</div>';});
 };
+
+/* ── 搜尋 ── */
 document.getElementById('search-toggle').onclick=function(){
   var bar=document.getElementById('search-bar');
   bar.style.display=bar.style.display==='block'?'none':'block';
-  if(bar.style.display==='block') document.getElementById('search-ph').focus();
+  if(bar.style.display==='block')document.getElementById('search-ph').focus();
 };
 document.getElementById('search-close').onclick=function(){
   document.getElementById('search-bar').style.display='none';
-  document.getElementById('search-page').style.display='none';
-  document.getElementById('cal-wrap').style.display='block';
-  document.getElementById('svc-page').style.display='none';
+  showCal();
 };
 function doSearch(){
-  var phone=document.getElementById('search-ph').value.trim();
-  if(!phone) return;
-  var bks=G.all.filter(function(b){ return String(b.customer_phone)===phone; });
-  bks.sort(function(a,b){ return new Date(b.start_time)-new Date(a.start_time); });
-  document.getElementById('cal-wrap').style.display='none';
-  document.getElementById('svc-page').style.display='none';
-  var sp=document.getElementById('search-page'); sp.style.display='block';
+  var phone=document.getElementById('search-ph').value.trim();if(!phone)return;
+  var bks=G.all.filter(function(b){return String(b.customer_phone)===phone;});
+  bks.sort(function(a,b){return new Date(b.start_time)-new Date(a.start_time);});
+  hideAllPages();
+  var sp=document.getElementById('search-page');sp.style.display='block';
   document.getElementById('sp-title').textContent='搜尋結果：'+phone+'（共 '+bks.length+' 筆）';
-  var list=document.getElementById('sp-list'); list.innerHTML='';
+  var list=document.getElementById('sp-list');list.innerHTML='';
   if(!bks.length){list.innerHTML='<div class="empty">查無此號碼的預約記錄</div>';return;}
   bks.forEach(function(b){
-    var s=new Date(b.start_time),e=new Date(b.end_time);
-    var isCx=b.status==='已取消';
-    var lines=getSvcLines(b.services);
-    var totalM=getMins(b.services);
-    var card=document.createElement('div');
-    card.className='sr-card'+(isCx?' cx':'');
-    card.innerHTML=
-      '<div class="sr-top"><span class="sr-name">'+b.customer_name+'</span><span class="'+(isCx?'badge-cx':'badge-ok')+'">'+b.status+'</span></div>'+
+    var s=new Date(b.start_time),e=new Date(b.end_time);var isCx=b.status==='已取消';
+    var lines=getSvcLines(b.services);var totalM=getMins(b.services);
+    var card=document.createElement('div');card.className='sr-card'+(isCx?' cx':'');
+    card.innerHTML='<div class="sr-top"><span class="sr-name">'+b.customer_name+'</span><span class="'+(isCx?'badge-cx':'badge-ok')+'">'+b.status+'</span></div>'+
       '<div style="color:#888;margin-bottom:6px">'+b.customer_phone+'　'+b.vehicle_model+(b.vehicle_gen?'（'+b.vehicle_gen+'）':'')+'</div>'+
       '<div>服務：'+lines.join('<br>　　　')+'</div>'+
       '<div>工時：共約 '+fmtMins(totalM)+'</div>'+
       '<div style="color:#555">時間：'+fmtDT(s)+' 至 '+p2(e.getHours())+':'+p2(e.getMinutes())+'</div>'+
       '<div style="font-size:11px;color:#aaa">編號：'+b.id+'</div>'+
       (isCx?'':'<button class="sr-view">查看 / 取消</button>');
-    if(!isCx){
-      var btn=card.querySelector('.sr-view');
-      btn._b=b; btn.onclick=function(){ showBookingOverlay(this._b); };
-    }
+    if(!isCx){var vb=card.querySelector('.sr-view');vb._b=b;vb.onclick=function(){showBookingOverlay(this._b);};}
     list.appendChild(card);
   });
 }
 document.getElementById('search-btn').onclick=doSearch;
-document.getElementById('search-ph').onkeydown=function(e){ if(e.key==='Enter')doSearch(); };
+document.getElementById('search-ph').onkeydown=function(e){if(e.key==='Enter')doSearch();};
 </script>
 </body>
 </html>
