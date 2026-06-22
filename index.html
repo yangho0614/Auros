@@ -189,10 +189,12 @@ function buildGen(){
 /* ── 服務項目 ── */
 (function(){
   var g=document.getElementById('svc-grp');
-  Object.keys(CAT).forEach(function(cat){
+  var catKeys=Object.keys(CAT);
+  catKeys.forEach(function(cat,ci){
     var blk=document.createElement('div');blk.className='svc-blk';
     var hd=document.createElement('div');hd.className='svc-hd';
-    hd.innerHTML='<span class="tx">'+cat+'</span><span class="bj" id="bj-'+encodeURIComponent(cat)+'"></span><span class="ar">▾</span>';
+    var bjId='bj'+ci;
+    hd.innerHTML='<span class="tx">'+cat+'</span><span class="bj" id="'+bjId+'"></span><span class="ar">▾</span>';
     blk.appendChild(hd);
     var bd=document.createElement('div');bd.className='svc-bd';
     blk.appendChild(bd);
@@ -204,12 +206,18 @@ function buildGen(){
       chip.onclick=function(){
         chip.classList.toggle('on');
         if(!st.subs[cat])st.subs[cat]=[];
-        var arr=st.subs[cat],i=arr.indexOf(sub);
-        if(chip.classList.contains('on')){if(i<0)arr.push(sub);if(st.names.indexOf(cat)<0)st.names.push(cat);}
-        else{if(i>=0)arr.splice(i,1);if(!arr.length){var ci=st.names.indexOf(cat);if(ci>=0)st.names.splice(ci,1);}}
-        var bj=document.getElementById('bj-'+encodeURIComponent(cat));
+        var arr=st.subs[cat],idx=arr.indexOf(sub);
+        if(chip.classList.contains('on')){
+          if(idx<0)arr.push(sub);
+          if(st.names.indexOf(cat)<0)st.names.push(cat);
+        }else{
+          if(idx>=0)arr.splice(idx,1);
+          if(!arr.length){var ci2=st.names.indexOf(cat);if(ci2>=0)st.names.splice(ci2,1);}
+        }
+        var bj=document.getElementById(bjId);
         var n=(st.subs[cat]||[]).length;
-        bj.style.display=n?'inline-block':'none';bj.textContent='已選'+n+'項';
+        bj.style.display=n?'inline-block':'none';
+        bj.textContent='已選'+n+'項';
         st.slot=null;renderSlots();upd();
       };
       bd.appendChild(chip);
@@ -312,7 +320,20 @@ function upd(){
   var btn=document.getElementById('cbtn');
   if(mok&&sok&&st.date&&st.slot&&name&&phone){
     var sh=parseInt(st.slot);
-    el.innerHTML='姓名：'+name+'　電話：'+phone+'<br>車型：'+st.model+(st.gen?'（'+st.gen+'）':'')+'<br>服務：'+lbls().join('、')+'（共約 '+fm(mins)+'）<br>時間：'+fd(st.date)+' '+st.slot+' 至 '+(sh+need)+':00';
+    var svcLines=[];
+    st.names.forEach(function(c){
+      (st.subs[c]||[]).forEach(function(s){
+        var label=c===s?c:c+'-'+s;
+        var m=CAT[c][s]||0;
+        svcLines.push(label+'（約'+fm(m)+'）');
+      });
+    });
+    el.innerHTML=
+      '姓名：'+name+'　電話：'+phone+'<br>'+
+      '車型：'+st.model+(st.gen?'（'+st.gen+'）':'')+'<br>'+
+      '服務：<br>'+svcLines.map(function(l){return'　'+l;}).join('<br>')+'<br>'+
+      '工時：預計共約 '+fm(mins)+'<br>'+
+      '時間：'+fd(st.date)+' '+st.slot+' 至 '+(sh+need)+':00';
     btn.disabled=false;
   }else{
     var miss=[];
