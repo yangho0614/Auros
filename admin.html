@@ -20,7 +20,9 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 
 /* 主介面 */
 #main-screen{display:none;flex-direction:column;min-height:100vh}
-.topbar{background:#fff;border-bottom:1px solid #e0e0e0;padding:10px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.topbar-wrap{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #e0e0e0;flex-shrink:0}
+.topbar{padding:10px 20px 8px;display:flex;align-items:center;gap:10px}
+.topbar-btns{padding:0 20px 8px;display:flex;gap:8px;flex-wrap:wrap}
 .topbar .logo-sm{width:30px;height:30px;background:#1a1a1a;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:500;flex-shrink:0}
 .topbar .site-title{font-size:14px;font-weight:500;flex:1;cursor:pointer;color:#1a1a1a;text-decoration:none}
 .topbar .site-title:hover{text-decoration:underline}
@@ -162,13 +164,17 @@ body{font-family:-apple-system,"PingFang TC",sans-serif;background:#f5f5f5;color
 
 <!-- 主介面 -->
 <div id="main-screen">
-  <div class="topbar">
-    <div class="logo-sm">A</div>
-    <span class="site-title" id="back-to-cal">AUROS TESLA 後台管理</span>
-    <button class="tb-btn" id="svc-toggle">⚙️ 服務設定</button>
-    <button class="tb-btn" id="search-toggle">🔍 搜尋客戶</button>
-    <button class="tb-btn" id="refresh-btn">↻ 重新整理</button>
-    <button class="tb-btn" id="logout-btn">登出</button>
+  <div class="topbar-wrap">
+    <div class="topbar">
+      <div class="logo-sm">A</div>
+      <span class="site-title" id="back-to-cal">AUROS TESLA 後台管理</span>
+    </div>
+    <div class="topbar-btns">
+      <button class="tb-btn" id="svc-toggle">⚙️ 服務設定</button>
+      <button class="tb-btn" id="search-toggle">🔍 搜尋客戶</button>
+      <button class="tb-btn" id="refresh-btn">↻ 重新整理</button>
+      <button class="tb-btn" id="logout-btn">登出</button>
+    </div>
   </div>
 
   <div class="dashboard">
@@ -490,7 +496,7 @@ document.getElementById('btn-block').onclick=function(){setBlocked(true);};
 document.getElementById('day-ov-close').onclick=closeOverlay;
 
 /* ── 預約詳情 Overlay ── */
-function showBookingOverlay(b){
+function showBookingOverlay(b, onCancelCallback){
   var s=new Date(b.start_time),e=new Date(b.end_time);
   var isCx=b.status==='已取消';
   var lines=getSvcLines(b.services);
@@ -519,7 +525,11 @@ function showBookingOverlay(b){
       fetch(API,{method:'POST',headers:{'Content-Type':'text/plain'},
         body:JSON.stringify({action:'cancel',id:b.id,admin:true})
       }).then(function(r){return r.json();}).then(function(d){
-        if(d.success){closeOverlay();loadAll();}
+        if(d.success){
+          closeOverlay();
+          loadAll(); // 重新整理所有資料 → renderStats() 在 loadAll 裡自動呼叫
+          if(typeof onCancelCallback==='function') setTimeout(onCancelCallback, 600);
+        }
         else{btn.disabled=false;btn.textContent='取消此預約';alert(d.error||'取消失敗');}
       }).catch(function(){btn.disabled=false;btn.textContent='取消此預約';alert('連線失敗');});
     };
@@ -694,7 +704,7 @@ function doSearch(){
       '<div style="color:#555">時間：'+fmtDT(s)+' 至 '+p2(e.getHours())+':'+p2(e.getMinutes())+'</div>'+
       '<div style="font-size:11px;color:#aaa">編號：'+b.id+'</div>'+
       (isCx?'':'<button class="sr-view">查看 / 取消</button>');
-    if(!isCx){var vb=card.querySelector('.sr-view');vb._b=b;vb.onclick=function(){showBookingOverlay(this._b);};}
+    if(!isCx){var vb=card.querySelector('.sr-view');vb._b=b;vb.onclick=function(){showBookingOverlay(this._b, doSearch);};}
     list.appendChild(card);
   });
 }
